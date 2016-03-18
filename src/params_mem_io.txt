@@ -1,0 +1,10 @@
+char *	host	'localhost'
+int	port	6379
+int	timeout	2
+char *	password	'foobared'
+char *	mem_io_id	'default'
+char *	redis_path	'/usr/local/software/redis/3.0.7/bin/redis-server'
+char *	redis_conf	'/home/lucg5005/redis.conf'
+int	channel_id	-1
+int	nr_channels	-1
+int	verbose	0
