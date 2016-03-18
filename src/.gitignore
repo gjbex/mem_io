@@ -1,0 +1,5 @@
+mem_io_start
+mem_io_store
+mem_io_retrieve
+dump.rdb
+.mem_io.conf
