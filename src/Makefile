@@ -4,7 +4,8 @@ CPPFLAGS = `pkg-config --cflags hiredis`
 LDFLAGS = `pkg-config --libs hiredis`
 
 APPL = mem_io_start mem_io_store mem_io_retrieve mem_io_stop
-COMMON_OBJS = mem_io_utils.o mem_io_cl_params.o mem_io_cl_params_aux.o
+COMMON_OBJS = mem_io_utils.o mem_io_cl_params.o mem_io_cl_params_aux.o \
+              cmd_utils.o
 MEM_IO_START_OBJS = $(COMMON_OBJS) mem_io_start.o
 MEM_IO_STORE_OBJS = $(COMMON_OBJS) mem_io_store.o
 MEM_IO_RETRIEVE_OBJS = $(COMMON_OBJS) mem_io_retrieve.o
