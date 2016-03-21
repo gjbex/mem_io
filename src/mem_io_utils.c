@@ -74,6 +74,11 @@ long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
     return nr_bytes;
 }
 
+void mem_io_shutdown(redisContext *context) {
+    redisReply *reply = redisCommand(context, "SHUTDOWN");
+    freeReplyObject(reply);
+}
+
 void mem_io_disconnect(redisContext *context) {
     redisFree(context);
 }
@@ -83,7 +88,8 @@ char *mem_io_create_key(char id[], int channel_id) {
     char *key = (char *) malloc(key_length*sizeof(char));
     if (key == NULL)
         errx(ALLOC_ERROR, "can allocate key of length %d", key_length);
-    snprintf(key,  key_length, "%s:%0*d", id, CHANNEL_ID_WIDTH, channel_id);
+    snprintf(key,  key_length, "%s:data:%0*d", id,
+             CHANNEL_ID_WIDTH, channel_id);
     return key;
 }
 
@@ -92,6 +98,6 @@ char *mem_io_create_meta_key(char id[], char spec[]) {
     char *key = (char *) malloc(key_length*sizeof(char));
     if (key == NULL)
         errx(ALLOC_ERROR, "can allocate key of length %d", key_length);
-    snprintf(key,  key_length, "%s:%s", id, spec);
+    snprintf(key,  key_length, "%s:meta:%s", id, spec);
     return key;
 }

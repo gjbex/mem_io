@@ -3,21 +3,25 @@ CFLAGS = -O2 -g -Wall -std=c99
 CPPFLAGS = `pkg-config --cflags hiredis`
 LDFLAGS = `pkg-config --libs hiredis`
 
-APPL = mem_io_start mem_io_store mem_io_retrieve
+APPL = mem_io_start mem_io_store mem_io_retrieve mem_io_stop
 COMMON_OBJS = mem_io_utils.o mem_io_cl_params.o mem_io_cl_params_aux.o
-MEM_IO_START = $(COMMON_OBJS) mem_io_start.o
+MEM_IO_START_OBJS = $(COMMON_OBJS) mem_io_start.o
 MEM_IO_STORE_OBJS = $(COMMON_OBJS) mem_io_store.o
 MEM_IO_RETRIEVE_OBJS = $(COMMON_OBJS) mem_io_retrieve.o
+MEM_IO_STOP_OBJS = $(COMMON_OBJS) mem_io_stop.o
 
 all: $(APPL)
 
-mem_io_start: $(MEM_IO_START)
+mem_io_start: $(MEM_IO_START_OBJS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 mem_io_store: $(MEM_IO_STORE_OBJS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 mem_io_retrieve: $(MEM_IO_RETRIEVE_OBJS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
+
+mem_io_stop: $(MEM_IO_STOP_OBJS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 %.o: %.c
