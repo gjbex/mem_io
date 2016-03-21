@@ -1,13 +1,13 @@
 #include <err.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
+#include "cmd_utils.h"
 #include "mem_io_utils.h"
 #include "mem_io_cl_params.h"
-
-#define CMD_LEN 1024
 
 int main(int argc, char *argv[]) {
     Params params;
@@ -23,10 +23,11 @@ int main(int argc, char *argv[]) {
     if (pid == -1)
         errx(FORK_ERROR, "fork failed");
     if (pid == 0) {
-        char cmd[CMD_LEN];
-        snprintf(cmd, CMD_LEN, "%s --port %d %s",
-                 params.redis_path, params.port, params.redis_conf);
+        char *cmd = cmd_alloc(params.redis_path);
+        cmd_append_int_option(cmd, "--port", params.port);
+        cmd_append_arg(cmd, params.redis_conf, false);
         int err = system(params.redis_path);
+        cmd_free(cmd);
         if (err != 0)
             errx(REDIS_RUN_ERROR, "redis started ended with %d", err);
     } else {
