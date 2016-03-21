@@ -3,6 +3,8 @@
 
 #include <hiredis/hiredis.h>
 
+#include "mem_io_errors.h"
+
 #define CHANNEL_ID_WIDTH 9
 
 extern char config_file_name[1024];

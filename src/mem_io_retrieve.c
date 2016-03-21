@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "mem_io_errors.h"
 #include "mem_io_utils.h"
 #include "mem_io_cl_params.h"
 
