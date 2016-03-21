@@ -1,5 +1,4 @@
 #include <err.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +37,12 @@ void cmd_append_option(char cmd[], char option[], char value[],
         else
             snprintf(cmd, CMD_LENGTH, "%s %s", tmp, option);
     }
+}
+
+void cmd_append_int_option(char cmd[], char option[], int value) {
+    char tmp[40];
+    snprintf(tmp, 40, "%d", value);
+    cmd_append_option(cmd, option, tmp, false);
 }
 
 void cmd_append_arg(char cmd[], char arg[], bool quote) {
