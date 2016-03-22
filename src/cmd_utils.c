@@ -33,9 +33,9 @@ void cmd_append_option(char cmd[], char option[], char value[],
     if (value != NULL) {
         strncpy(tmp, cmd, CMD_LENGTH);
         if (quote)
-            snprintf(cmd, CMD_LENGTH, "%s '%s'", tmp, option);
+            snprintf(cmd, CMD_LENGTH, "%s '%s'", tmp, value);
         else
-            snprintf(cmd, CMD_LENGTH, "%s %s", tmp, option);
+            snprintf(cmd, CMD_LENGTH, "%s %s", tmp, value);
     }
 }
 
