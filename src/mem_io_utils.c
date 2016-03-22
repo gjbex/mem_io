@@ -42,11 +42,9 @@ void mem_io_set_nr_channels(redisContext *context, char id[],
 int mem_io_get_nr_channels(redisContext *context, char id[]) {
     char *key = mem_io_create_meta_key(id, "nr_channels");
     redisReply *reply = redisCommand(context, "GET %b", key, strlen(key));
-    if (reply->len != 0) 
-        errx(PUSH_ERROR, "GET from '%s' failed", key);
-    long long value = reply->integer;
+    int value = atoi(reply->str);
     freeReplyObject(reply);
-    return (int) value;
+    return value;
 }
 
 void mem_io_push(redisContext *context, char key[],
@@ -84,20 +82,22 @@ void mem_io_disconnect(redisContext *context) {
 }
 
 char *mem_io_create_key(char id[], int channel_id) {
-    int key_length = strlen(id) + 1 + CHANNEL_ID_WIDTH + 1;
+    char qualifier[80] = ":data:";
+    int key_length = strlen(id) + strlen(qualifier) + CHANNEL_ID_WIDTH + 1;
     char *key = (char *) malloc(key_length*sizeof(char));
     if (key == NULL)
         errx(ALLOC_ERROR, "can allocate key of length %d", key_length);
-    snprintf(key,  key_length, "%s:data:%0*d", id,
+    snprintf(key,  key_length, "%s%s%0*d", id, qualifier,
              CHANNEL_ID_WIDTH, channel_id);
     return key;
 }
 
 char *mem_io_create_meta_key(char id[], char spec[]) {
-    int key_length = strlen(id) + 1 + strlen(spec) + 1;
+    char qualifier[80] = ":meta:";
+    int key_length = strlen(id) + strlen(qualifier) + strlen(spec) + 1;
     char *key = (char *) malloc(key_length*sizeof(char));
     if (key == NULL)
         errx(ALLOC_ERROR, "can allocate key of length %d", key_length);
-    snprintf(key,  key_length, "%s:meta:%s", id, spec);
+    snprintf(key,  key_length, "%s%s%s", id, qualifier, spec);
     return key;
 }
