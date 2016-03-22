@@ -1,12 +1,23 @@
 #ifndef __MEM_IO_ERRORS__
 #define __MEM_IO_ERRORS__
 
-#define ALLOC_ERROR 1
-#define PUSH_ERROR 2
-#define AUTH_ERROR 3
-#define INVALID_CHANNEL_ERROR 4
-#define FORK_ERROR 5
-#define REDIS_RUN_ERROR 6
-#define INVALID_NR_CHANNELS 7
+
+/* redis start errors */
+#define FORK_ERROR 12
+#define REDIS_RUN_ERROR 13
+
+/* application logic errors */
+#define ALLOC_ERROR 20
+#define INVALID_CHANNEL_ERROR 21
+#define INVALID_NR_CHANNELS 22
+
+/* redis command errors */
+#define AUTH_ERROR 51
+#define RPUSH_ERROR 52
+#define LINDEX_ERROR 53
+#define SET_ERROR 54
+#define GET_ERROR 55
+#define LLEN_ERROR 56
+#define SHUTDOWN_ERROR 57
 
 #endif
