@@ -2,5 +2,5 @@ mem_io_start
 mem_io_store
 mem_io_retrieve
 mem_io_stop
-dump.rdb
+*.rdb
 .mem_io.conf
