@@ -24,9 +24,11 @@ int main(int argc, char *argv[]) {
         errx(FORK_ERROR, "fork failed");
     if (pid == 0) {
         char *cmd = cmd_alloc(params.redis_path);
-        cmd_append_int_option(cmd, "--port", params.port);
         cmd_append_arg(cmd, params.redis_conf, false);
-        int err = system(params.redis_path);
+        cmd_append_int_option(cmd, "--port", params.port);
+        if (params.verbose)
+            fprintf(stderr, "executing '%s'\n", cmd);
+        int err = system(cmd);
         cmd_free(cmd);
         if (err != 0)
             errx(REDIS_RUN_ERROR, "redis started ended with %d", err);
