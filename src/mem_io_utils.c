@@ -57,6 +57,19 @@ void mem_io_push(redisContext *context, char key[],
     freeReplyObject(reply);
 }
 
+void mem_io_print_type(int type) {
+    if (type == REDIS_REPLY_INTEGER)
+        printf("integer\n");
+    else if (type == REDIS_REPLY_STRING)
+        printf("string\n");
+    else if (type == REDIS_REPLY_ARRAY)
+        printf("array\n");
+    else if (type == REDIS_REPLY_ERROR)
+        printf("error\n");
+    else
+        printf("unknown type\n");
+}
+
 long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
     redisReply *reply = redisCommand(context, "LLEN %b",
                                      key, strlen(key));
@@ -64,7 +77,8 @@ long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
     freeReplyObject(reply);
     long nr_bytes = 0;
     for (long long i = 0; i < list_length; i++) {
-        reply = redisCommand(context, "LINDEX %b %ld", key, i);
+        reply = redisCommand(context, "LINDEX %b %lld",
+                             key, strlen(key), i);
         fwrite(reply->str, sizeof(char), reply->len, fp);
         nr_bytes += reply->len;
         freeReplyObject(reply);
