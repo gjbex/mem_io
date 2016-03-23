@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -O2 -g -Wall -std=c99
+CFLAGS = -O2 -g -Wall -std=c99 -D_POSIX_SOURCE
 CPPFLAGS = `pkg-config --cflags hiredis`
 LDFLAGS = `pkg-config --libs hiredis`
 

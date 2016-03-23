@@ -13,6 +13,8 @@ void cmd_append_arg(char cmd[], char arg[], bool quote);
 void cmd_append_flag(char cmd[], char flag[]);
 void cmd_free(char *cmd);
 
+void cli_get_passwd(char password[], int max_length);
+
 char *env_get_home_dir(void);
 
 bool file_exists(char path[]);

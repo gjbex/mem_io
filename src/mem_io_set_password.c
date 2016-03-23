@@ -20,7 +20,8 @@ int main(int argc, char *argv[]) {
     char conf_path[PATH_LENGTH];
     snprintf(conf_path, PATH_LENGTH, "%s/%s", home_dir, params.mem_io_conf);
     if (!file_exists(conf_path) || params.force) {
-        char *passwd = getpass("Enter password: ");
+        char passwd[PASSWD_LENGTH];
+        cli_get_passwd(passwd, PASSWD_LENGTH);
         if (params.verbose)
             fprintf(stderr, "password '%s' to file '%s'\n", passwd,
                     conf_path);
