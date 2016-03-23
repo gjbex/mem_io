@@ -68,6 +68,20 @@ char *env_get_home_dir(void) {
     return home_dir;
 }
 
+char *env_get_job_id(void) {
+    char var[80] = "PBS_JOBID";
+    char *job_id = getenv(var);
+    if (job_id != NULL) {
+        char *tmp = (char *) malloc((1 + strlen(job_id))*sizeof(char));
+        if (tmp == NULL)
+            errx(EXIT_FAILURE, "can not allocate job ID");
+        strcpy(tmp, job_id);
+        return tmp;
+    } else {
+        return NULL;
+    }
+}
+
 bool file_exists(char path[]) {
     struct stat file_stat;
     int exit_code = stat(path, &file_stat);

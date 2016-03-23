@@ -14,6 +14,7 @@ void cmd_append_flag(char cmd[], char flag[]);
 void cmd_free(char *cmd);
 
 char *env_get_home_dir(void);
+char *env_get_job_id(void);
 
 bool file_exists(char path[]);
 
