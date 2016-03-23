@@ -6,8 +6,10 @@
 
 #include "mem_io_errors.h"
 #include "mem_io_utils.h"
+#include "mem_io_cl_params.h"
+#include "cmd_utils.h"
 
-char config_file_name[1024] = ".mem_io.conf";
+#define MAX_LENGTH 1024
 
 redisContext *mem_io_connect(char host[], int port, int timeout_secs) {
     struct timeval timeout = {timeout_secs, 0};
@@ -109,10 +111,18 @@ char *mem_io_create_key(char id[], int channel_id) {
     int key_length = strlen(id) + strlen(qualifier) + CHANNEL_ID_WIDTH + 1;
     char *key = (char *) malloc(key_length*sizeof(char));
     if (key == NULL)
-        errx(ALLOC_ERROR, "can allocate key of length %d", key_length);
+        errx(ALLOC_ERROR, "can int allocate key of length %d", key_length);
     snprintf(key,  key_length, "%s%s%0*d", id, qualifier,
              CHANNEL_ID_WIDTH, channel_id);
     return key;
+}
+
+char *mem_io_get_conf_path(char file_name[]) {
+    char *home_dir = env_get_home_dir();
+    int path_length = strlen(home_dir) + 1 + strlen(file_name) + 1;
+    char *conf_path = (char *) malloc(path_length*sizeof(char));
+    snprintf(conf_path, path_length, "%s/%s", home_dir, file_name);
+    return conf_path;
 }
 
 char *mem_io_create_meta_key(char id[], char spec[]) {
@@ -120,7 +130,39 @@ char *mem_io_create_meta_key(char id[], char spec[]) {
     int key_length = strlen(id) + strlen(qualifier) + strlen(spec) + 1;
     char *key = (char *) malloc(key_length*sizeof(char));
     if (key == NULL)
-        errx(ALLOC_ERROR, "can allocate key of length %d", key_length);
+        errx(ALLOC_ERROR, "can not allocate key of length %d", key_length);
     snprintf(key,  key_length, "%s%s%s", id, qualifier, spec);
     return key;
+}
+
+char *mem_io_get_password(Params *params) {
+    size_t password_length = strlen(params->password) + 1;
+    if (password_length != 1) {
+        char *tmp = (char *) malloc(password_length*sizeof(char));
+        if (tmp == NULL)
+            errx(ALLOC_ERROR, "can not allocate password string");
+        strncpy(tmp, params->password, password_length);
+        return tmp;
+    } else {
+        char *conf_path = mem_io_get_conf_path(params->mem_io_conf);
+        if (file_exists(conf_path)) {
+            char *tmp = (char *) malloc(MAX_LENGTH*sizeof(char));
+            bool read_password = false;
+            FILE *conf_fp = fopen(conf_path, "r");
+            while (!feof(conf_fp)) {
+                if (1 == fscanf(conf_fp, "password = '%s'", tmp)) {
+                    read_password = true;
+                    break;
+                }
+            }
+            fclose(conf_fp);
+            if (read_password)
+                return tmp;
+            else
+                errx(AUTH_ERROR,
+                        "no password set, you do not want to do this");
+        } else {
+            errx(AUTH_ERROR, "no password set, you do not want to do this");
+        }
+    }
 }
