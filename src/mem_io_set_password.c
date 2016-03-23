@@ -1,6 +1,7 @@
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "cmd_utils.h"
 #include "mem_io_cl_params.h"
@@ -18,10 +19,7 @@ int main(int argc, char *argv[]) {
     char conf_path[PATH_LENGTH];
     snprintf(conf_path, PATH_LENGTH, "%s/%s", home_dir, params.mem_io_conf);
     if (!file_exists(conf_path) || params.force) {
-        char passwd[PASSWD_LENGTH];
-        printf("Enter password: ");
-        if (1 != scanf("%s", passwd))
-            errx(EXIT_FAILURE, "reading password failed");
+        char *passwd = getpass("Enter password: ");
         if (params.verbose)
             fprintf(stderr, "password '%s' to file '%s'\n", passwd,
                     conf_path);
