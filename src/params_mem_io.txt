@@ -5,6 +5,8 @@ char *	password	'foobared'
 char *	mem_io_id	'default'
 char *	redis_path	'/usr/local/software/redis/3.0.7/bin/redis-server'
 char *	redis_conf	'/home/lucg5005/redis.conf'
+char *	mem_io_conf	'.mem_io.conf'
 int	channel_id	-1
 int	nr_channels	-1
-int	verbose	0
+bool	verbose	false
+bool	force	false

@@ -32,9 +32,14 @@ void initCL(Params *params) {
 	if (!(params->redis_conf = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate redis_conf field");
 	strncpy(params->redis_conf, "/home/lucg5005/redis.conf", len + 1);
+	len = strlen(".mem_io.conf");
+	if (!(params->mem_io_conf = (char *) calloc(len + 1, sizeof(char))))
+		errx(EXIT_CL_ALLOC_FAIL, "can not allocate mem_io_conf field");
+	strncpy(params->mem_io_conf, ".mem_io.conf", len + 1);
 	params->channel_id = -1;
 	params->nr_channels = -1;
-	params->verbose = 0;
+	params->verbose = false;
+	params->force = false;
 }
 
 void parseCL(Params *params, int *argc, char **argv[]) {
@@ -148,6 +153,22 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 			i++;
 			continue;
 		}
+		if (!strncmp((*argv)[i], "-mem_io_conf", 13)) {
+			shiftCL(&i, *argc, *argv);
+			argv_str = (*argv)[i];
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-mem_io_conf' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->mem_io_conf);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->mem_io_conf = strncpy(tmp, argv_str, len + 1);
+			i++;
+			continue;
+		}
 		if (!strncmp((*argv)[i], "-channel_id", 12)) {
 			shiftCL(&i, *argc, *argv);
 			argv_str = (*argv)[i];
@@ -171,13 +192,12 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 			continue;
 		}
 		if (!strncmp((*argv)[i], "-verbose", 9)) {
-			shiftCL(&i, *argc, *argv);
-			argv_str = (*argv)[i];
-			if (!isIntCL(argv_str, 0)) {
-				fprintf(stderr, "### error: invalid value for option '-verbose' of type int\n");
-				exit(EXIT_CL_INVALID_VALUE);
-			}
-			params->verbose = atoi(argv_str);
+			params->verbose = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-force", 7)) {
+			params->force = true;
 			i++;
 			continue;
 		}
@@ -287,6 +307,20 @@ void parseFileCL(Params *params, char *fileName) {
 			stripQuotesCL(params->redis_conf);
 			continue;
 		}
+		if (sscanf(line_str, "mem_io_conf = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-mem_io_conf' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->mem_io_conf);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->mem_io_conf = strncpy(tmp, argv_str, len + 1);
+			stripQuotesCL(params->mem_io_conf);
+			continue;
+		}
 		if (sscanf(line_str, "channel_id = %[^\n]", argv_str) == 1) {
 			if (!isIntCL(argv_str, 0)) {
 				fprintf(stderr, "### error: invalid value for option '-channel_id' of type int\n");
@@ -304,11 +338,31 @@ void parseFileCL(Params *params, char *fileName) {
 			continue;
 		}
 		if (sscanf(line_str, "verbose = %[^\n]", argv_str) == 1) {
-			if (!isIntCL(argv_str, 0)) {
-				fprintf(stderr, "### error: invalid value for option '-verbose' of type int\n");
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-verbose' of type bool\n");
 				exit(EXIT_CL_INVALID_VALUE);
 			}
-			params->verbose = atoi(argv_str);
+			if (!strncmp("false", argv_str, 6)) {
+				params->verbose = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->verbose = true;
+			} else {
+				params->verbose = atoi(argv_str);
+			}
+			continue;
+		}
+		if (sscanf(line_str, "force = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-force' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->force = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->force = true;
+			} else {
+				params->force = atoi(argv_str);
+			}
 			continue;
 		}
 		fprintf(stderr, "### warning, line can not be parsed: '%s'\n", line_str);
@@ -324,9 +378,11 @@ void dumpCL(FILE *fp, char prefix[], Params *params) {
 	fprintf(fp, "%smem_io_id = '%s'\n", prefix, params->mem_io_id);
 	fprintf(fp, "%sredis_path = '%s'\n", prefix, params->redis_path);
 	fprintf(fp, "%sredis_conf = '%s'\n", prefix, params->redis_conf);
+	fprintf(fp, "%smem_io_conf = '%s'\n", prefix, params->mem_io_conf);
 	fprintf(fp, "%schannel_id = %d\n", prefix, params->channel_id);
 	fprintf(fp, "%snr_channels = %d\n", prefix, params->nr_channels);
 	fprintf(fp, "%sverbose = %d\n", prefix, params->verbose);
+	fprintf(fp, "%sforce = %d\n", prefix, params->force);
 }
 
 void finalizeCL(Params *params) {
@@ -335,8 +391,9 @@ void finalizeCL(Params *params) {
 	free(params->mem_io_id);
 	free(params->redis_path);
 	free(params->redis_conf);
+	free(params->mem_io_conf);
 }
 
 void printHelpCL(FILE *fp) {
-	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -redis_conf <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose <integer>\n  -?: print this message");
+	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -redis_conf <string>\n  -mem_io_conf <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -?: print this message");
 }

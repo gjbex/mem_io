@@ -1,6 +1,7 @@
 #ifndef MEM_IO_CL_PARAMS_HDR
 #define MEM_IO_CL_PARAMS_HDR
 
+#include <stdbool.h>
 #include <stdio.h>
 
 typedef struct {
@@ -11,9 +12,11 @@ typedef struct {
 	char * mem_io_id;
 	char * redis_path;
 	char * redis_conf;
+	char * mem_io_conf;
 	int channel_id;
 	int nr_channels;
-	int verbose;
+	bool verbose;
+	bool force;
 } Params;
 
 void initCL(Params *params);
