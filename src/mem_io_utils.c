@@ -96,8 +96,6 @@ long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
 
 void mem_io_shutdown(redisContext *context) {
     redisReply *reply = redisCommand(context, "SHUTDOWN");
-    if (reply->type == REDIS_REPLY_ERROR)
-        errx(SHUTDOWN_ERROR, "SHUTDOWN failed: %s", reply->str);
     freeReplyObject(reply);
 }
 
