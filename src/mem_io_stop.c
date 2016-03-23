@@ -8,15 +8,16 @@
 int main(int argc, char *argv[]) {
     Params params;
     initCL(&params);
-    parseFileCL(&params, config_file_name);
     parseCL(&params, &argc, &argv);
+    char *password = mem_io_get_password(&params);
     if (params.verbose)
         dumpCL(stderr, "# ", &params);
     redisContext *context = mem_io_connect(params.host, params.port,
                                            params.timeout);
-    mem_io_auth(context, params.password);
+    mem_io_auth(context, password);
     mem_io_shutdown(context);
     mem_io_disconnect(context);
+    free(password);
     finalizeCL(&params);
     return EXIT_SUCCESS;
 }

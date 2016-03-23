@@ -6,7 +6,6 @@
 
 #include "mem_io_errors.h"
 #include "mem_io_utils.h"
-#include "mem_io_cl_params.h"
 #include "cmd_utils.h"
 
 #define MAX_LENGTH 1024
