@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 #include "cmd_utils.h"
 #include "mem_io_cl_params.h"
@@ -26,6 +27,9 @@ int main(int argc, char *argv[]) {
         FILE *conf_fp = fopen(conf_path, "w");
         if (conf_fp == NULL)
             err(EXIT_FAILURE, "can open file '%s'", conf_path);
+        if (0 != chmod(conf_path, S_IRUSR | S_IWUSR))
+            err(EXIT_FAILURE, "can set file permissions on '%s'",
+                conf_path);
         fprintf(conf_fp, "password = '%s'", passwd);
         fclose(conf_fp);
     } else {
