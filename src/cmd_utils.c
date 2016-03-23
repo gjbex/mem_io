@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "cmd_utils.h"
 
@@ -55,4 +58,18 @@ void cmd_append_flag(char cmd[], char flag[]) {
 
 void cmd_free(char *cmd) {
     free(cmd);
+}
+
+char *env_get_home_dir(void) {
+    char var[80] = "HOME";
+    char *home_dir = getenv(var);
+    if (home_dir == NULL)
+        errx(EXIT_FAILURE, "no %s environment variable set", var);
+    return home_dir;
+}
+
+bool file_exists(char path[]) {
+    struct stat file_stat;
+    int exit_code = stat(path, &file_stat);
+    return exit_code == 0;
 }

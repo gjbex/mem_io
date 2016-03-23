@@ -13,4 +13,8 @@ void cmd_append_arg(char cmd[], char arg[], bool quote);
 void cmd_append_flag(char cmd[], char flag[]);
 void cmd_free(char *cmd);
 
+char *env_get_home_dir(void);
+
+bool file_exists(char path[]);
+
 #endif
