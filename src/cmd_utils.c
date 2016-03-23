@@ -4,7 +4,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <termios.h>
 #include <unistd.h>
 
 #include "cmd_utils.h"
@@ -59,25 +58,6 @@ void cmd_append_flag(char cmd[], char flag[]) {
 
 void cmd_free(char *cmd) {
     free(cmd);
-}
-
-void cli_get_passwd(char password[], int max_length) {
-    struct termios oflags, nflags;
-    /* disabling echo */
-    tcgetattr(fileno(stdin), &oflags);
-    nflags = oflags;
-    nflags.c_lflag &= ~ECHO;
-    nflags.c_lflag |= ECHONL;
-
-    if (tcsetattr(fileno(stdin), TCSANOW, &nflags) != 0)
-        err(EXIT_FAILURE, "can set terminal attributes");
-
-    printf("Enter password: ");
-    fgets(password, max_length, stdin);
-    password[strlen(password) - 1] = '\0';
-    /* restore terminal */
-    if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
-        err(EXIT_FAILURE, "can restore terminal attributes");
 }
 
 char *env_get_home_dir(void) {

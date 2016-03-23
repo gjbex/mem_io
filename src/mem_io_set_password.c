@@ -1,14 +1,18 @@
 #include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <string.h>
 #include <sys/stat.h>
+#include <termios.h>
+#include <unistd.h>
 
 #include "cmd_utils.h"
 #include "mem_io_cl_params.h"
 
 #define PATH_LENGTH 1024
 #define PASSWD_LENGTH 1024
+
+void cli_get_passwd(char password[], int max_length);
 
 int main(int argc, char *argv[]) {
     Params params;
@@ -41,3 +45,25 @@ int main(int argc, char *argv[]) {
     finalizeCL(&params);
     return EXIT_SUCCESS;
 }
+
+void cli_get_passwd(char password[], int max_length) {
+    struct termios oflags, nflags;
+    /* disabling echo */
+    tcgetattr(fileno(stdin), &oflags);
+    nflags = oflags;
+    nflags.c_lflag &= ~ECHO;
+    nflags.c_lflag |= ECHONL;
+
+    if (tcsetattr(fileno(stdin), TCSANOW, &nflags) != 0)
+        err(EXIT_FAILURE, "can set terminal attributes");
+
+    printf("Enter password: ");
+    char *result = fgets(password, max_length, stdin);
+    if (result == NULL)
+        err(EXIT_FAILURE, "could not read password from stdin");
+    password[strlen(password) - 1] = '\0';
+    /* restore terminal */
+    if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
+        err(EXIT_FAILURE, "can restore terminal attributes");
+}
+
