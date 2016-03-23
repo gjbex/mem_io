@@ -17,8 +17,7 @@ int main(int argc, char *argv[]) {
     mem_io_auth(context, password);
     mem_io_shutdown(context);
     mem_io_disconnect(context);
-    free(password);
     finalizeCL(&params);
+    free(password);
     return EXIT_SUCCESS;
 }
-
