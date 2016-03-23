@@ -1,7 +1,4 @@
 # To do
-1. Write function to retrieve password from .mem_io.conf if it is not given on
-    the command line.  Use this function in all applications that require
-    authentication.
 1. Write a function to retrieve the PBS torque job ID from an environment
     variable.
 1. Use the PBS torque job id as mem_io_id unless the latter is specified
