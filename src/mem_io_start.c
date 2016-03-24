@@ -13,7 +13,6 @@ int main(int argc, char *argv[]) {
     Params params;
     initCL(&params);
     parseCL(&params, &argc, &argv);
-    char *password = mem_io_get_password(&params);
     if (params.verbose)
         dumpCL(stderr, "# ", &params);
     if (params.nr_channels <= 0)
@@ -34,6 +33,7 @@ int main(int argc, char *argv[]) {
         if (err != 0)
             errx(REDIS_RUN_ERROR, "redis started ended with %d", err);
     } else {
+        char *password = mem_io_get_password(&params);
         while (sleep(params.timeout) > 0);
         redisContext *context = mem_io_connect(params.host, params.port,
                                                params.timeout);
@@ -41,8 +41,8 @@ int main(int argc, char *argv[]) {
         mem_io_set_nr_channels(context, mem_io_id,
                                params.nr_channels);
         mem_io_disconnect(context);
+        free(password);
     }
-    free(password);
     free(mem_io_id);
     finalizeCL(&params);
     return EXIT_SUCCESS;
