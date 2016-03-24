@@ -190,13 +190,25 @@ char *mem_io_get_id(Params *params) {
     }
 }
 
-#define CONF_EXT ".conf"
-
-char *mem_io_conf_name(char mem_io_id[]) {
-    int name_length = strlen(mem_io_id) + strlen(CONF_EXT) + 1;
+char *conf_name(char prefix[], char mem_io_id[], char ext[]) {
+    int name_length = strlen(prefix) + strlen(mem_io_id) + strlen(ext) + 1;
     char *conf_name = (char *) malloc(name_length*sizeof(char));
     if (conf_name == NULL)
         errx(ALLOC_ERROR, "can not allocate configuration file name");
-    snprintf(conf_name, name_length, "%s%s", mem_io_id, CONF_EXT);
+    snprintf(conf_name, name_length, "%s%s%s", prefix, mem_io_id, ext);
     return conf_name;
+}
+
+#define MEM_IO_CONF_PREFIX "mem_io_"
+#define MEM_IO_CONF_EXT ".conf"
+
+char *mem_io_conf_name(char mem_io_id[]) {
+    return conf_name(MEM_IO_CONF_PREFIX, mem_io_id, MEM_IO_CONF_EXT);
+}
+
+#define REDIS_CONF_PREFIX "mem_io_"
+#define REDIS_CONF_EXT ".conf"
+
+char *redis_conf_name(char mem_io_id[]) {
+    return conf_name(REDIS_CONF_PREFIX, mem_io_id, REDIS_CONF_EXT);
 }
