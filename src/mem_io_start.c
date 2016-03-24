@@ -19,6 +19,7 @@ int main(int argc, char *argv[]) {
     if (params.nr_channels <= 0)
         errx(INVALID_NR_CHANNELS, "invalid number of channels %d",
              params.nr_channels);
+    char *mem_io_id = mem_io_get_id(&params);
     pid_t pid = fork();
     if (pid == -1)
         errx(FORK_ERROR, "fork failed");
@@ -37,11 +38,12 @@ int main(int argc, char *argv[]) {
         redisContext *context = mem_io_connect(params.host, params.port,
                                                params.timeout);
         mem_io_auth(context, password);
-        mem_io_set_nr_channels(context, params.mem_io_id,
+        mem_io_set_nr_channels(context, mem_io_id,
                                params.nr_channels);
         mem_io_disconnect(context);
     }
     free(password);
+    free(mem_io_id);
     finalizeCL(&params);
     return EXIT_SUCCESS;
 }
