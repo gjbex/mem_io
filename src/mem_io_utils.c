@@ -148,6 +148,8 @@ char *mem_io_get_password(Params *params) {
             FILE *conf_fp = fopen(conf_path, "r");
             while (!feof(conf_fp)) {
                 if (1 == fscanf(conf_fp, "password = '%s'", tmp)) {
+                    // the final quote will be part of tmp, so overwrite it
+                    tmp[strlen(tmp) - 1] = '\0';
                     read_password = true;
                     break;
                 }
