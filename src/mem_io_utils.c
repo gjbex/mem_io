@@ -163,3 +163,27 @@ char *mem_io_get_password(Params *params) {
         }
     }
 }
+
+#define DEFAULT "default"
+
+char *mem_io_get_id(Params *params) {
+    size_t id_length = strlen(params->mem_io_id) + 1;
+    if (id_length != 1) {
+        char *tmp = (char *) malloc(id_length*sizeof(char));
+        if (tmp == NULL)
+            errx(ALLOC_ERROR, "can not allocate mem_io ID string");
+        strncpy(tmp, params->mem_io_id, id_length);
+        return tmp;
+    } else {
+        char *job_id = env_get_job_id();
+        if (job_id != NULL) {
+            return job_id;
+        } else {
+            char *id = (char *) malloc((strlen(DEFAULT) + 1)*sizeof(char));
+            if (id == NULL)
+                errx(ALLOC_ERROR, "can allocate default mem_io ID");
+            strcpy(id, DEFAULT);
+            return id;
+        }
+    }
+}

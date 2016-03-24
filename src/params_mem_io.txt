@@ -2,7 +2,7 @@ char *	host	'localhost'
 int	port	6379
 int	timeout	2
 char *	password	''
-char *	mem_io_id	'default'
+char *	mem_io_id	''
 char *	redis_path	'/usr/local/software/redis/3.0.7/bin/redis-server'
 char *	redis_conf	'/home/lucg5005/redis.conf'
 char *	mem_io_conf	'.mem_io.conf'
