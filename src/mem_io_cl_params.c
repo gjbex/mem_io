@@ -16,14 +16,14 @@ void initCL(Params *params) {
 	strncpy(params->host, "localhost", len + 1);
 	params->port = 6379;
 	params->timeout = 2;
-	len = strlen("foobared");
+	len = strlen("");
 	if (!(params->password = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate password field");
-	strncpy(params->password, "foobared", len + 1);
-	len = strlen("default");
+	strncpy(params->password, "", len + 1);
+	len = strlen("");
 	if (!(params->mem_io_id = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate mem_io_id field");
-	strncpy(params->mem_io_id, "default", len + 1);
+	strncpy(params->mem_io_id, "", len + 1);
 	len = strlen("/usr/local/software/redis/3.0.7/bin/redis-server");
 	if (!(params->redis_path = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate redis_path field");
