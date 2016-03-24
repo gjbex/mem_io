@@ -9,7 +9,8 @@
 #include "mem_io_utils.h"
 #include "mem_io_cl_params.h"
 
-void create_conf_file(char mem_io_id[], Params *params, char password[]);
+void create_mem_io_conf_file(char mem_io_id[], Params *params,
+                             char password[]);
 
 int main(int argc, char *argv[]) {
     Params params;
@@ -43,7 +44,7 @@ int main(int argc, char *argv[]) {
         mem_io_set_nr_channels(context, mem_io_id,
                                params.nr_channels);
         mem_io_disconnect(context);
-        create_conf_file(mem_io_id, &params, password);
+        create_mem_io_conf_file(mem_io_id, &params, password);
         free(password);
     }
     free(mem_io_id);
@@ -63,7 +64,8 @@ char *get_hostname(void) {
     return hostname;
 }
 
-void create_conf_file(char mem_io_id[], Params *params, char password[]) {
+void create_mem_io_conf_file(char mem_io_id[], Params *params,
+                             char password[]) {
     char *conf_name = mem_io_conf_name(mem_io_id);
     FILE *conf_fp = fopen(conf_name, "w");
     if (conf_fp == NULL)
