@@ -24,5 +24,6 @@ char *mem_io_create_key(char id[], int channel_id);
 char *mem_io_create_meta_key(char id[], char spec[]);
 char *mem_io_get_password(Params *params);
 char *mem_io_get_id(Params *params);
+char *mem_io_conf_name(char mem_io_id[]);
 
 #endif

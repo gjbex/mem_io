@@ -189,3 +189,14 @@ char *mem_io_get_id(Params *params) {
         }
     }
 }
+
+#define CONF_EXT ".conf"
+
+char *mem_io_conf_name(char mem_io_id[]) {
+    int name_length = strlen(mem_io_id) + strlen(CONF_EXT) + 1;
+    char *conf_name = (char *) malloc(name_length*sizeof(char));
+    if (conf_name == NULL)
+        errx(ALLOC_ERROR, "can not allocate configuration file name");
+    snprintf(conf_name, name_length, "%s%s", mem_io_id, CONF_EXT);
+    return conf_name;
+}
