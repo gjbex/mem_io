@@ -9,6 +9,8 @@
 #include "mem_io_utils.h"
 #include "mem_io_cl_params.h"
 
+char *get_hostname(void);
+
 int main(int argc, char *argv[]) {
     Params params;
     initCL(&params);
@@ -46,4 +48,16 @@ int main(int argc, char *argv[]) {
     free(mem_io_id);
     finalizeCL(&params);
     return EXIT_SUCCESS;
+}
+
+#define MAX_LENGTH 1024
+
+char *get_hostname(void) {
+    char *hostname = (char *) malloc(MAX_LENGTH*sizeof(char));
+    if (hostname == NULL)
+        errx(ALLOC_ERROR, "can not allocate hostname");
+    int exit_code = gethostname(hostname, MAX_LENGTH);
+    if (exit_code != 0)
+        errx(HOSTNAME_ERROR, "can not determine hostname");
+    return hostname;
 }
