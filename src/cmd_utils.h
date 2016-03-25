@@ -13,6 +13,7 @@ void cmd_append_key_value_option(char cmd[], char option[],
 void cmd_append_int_option(char cmd[], char option[], int value);
 void cmd_append_arg(char cmd[], char arg[], bool quote);
 void cmd_append_flag(char cmd[], char flag[]);
+void cmd_redirect_stdout(char cmd[], char file_name[]);
 void cmd_free(char *cmd);
 
 char *env_get_home_dir(void);

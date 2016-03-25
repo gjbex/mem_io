@@ -67,6 +67,10 @@ void cmd_append_key_value_option(char cmd[], char option[],
     free(key_value);
 }
 
+void cmd_redirect_stdout(char cmd[], char file_name[]) {
+    cmd_append_option(cmd, ">", file_name, false);
+}
+
 void cmd_free(char *cmd) {
     free(cmd);
 }
