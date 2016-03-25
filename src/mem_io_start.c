@@ -11,6 +11,8 @@
 
 void create_mem_io_conf_file(char mem_io_id[], Params *params,
                              char password[]);
+void create_redis_conf_file(char mem_io_id[], Params *params,
+                            char password[]);
 
 int main(int argc, char *argv[]) {
     Params params;
@@ -22,12 +24,15 @@ int main(int argc, char *argv[]) {
         errx(INVALID_NR_CHANNELS, "invalid number of channels %d",
              params.nr_channels);
     char *mem_io_id = mem_io_get_id(&params);
+    char *password = mem_io_get_password(&params);
+    create_redis_conf_file(mem_io_id, &params, password);
     pid_t pid = fork();
     if (pid == -1)
         errx(FORK_ERROR, "fork failed");
     if (pid == 0) {
         char *cmd = cmd_alloc(params.redis_path);
-        cmd_append_arg(cmd, params.redis_conf, false);
+        char *conf_name = redis_conf_name(mem_io_id);
+        cmd_append_arg(cmd, conf_name, false);
         cmd_append_int_option(cmd, "--port", params.port);
         if (params.verbose)
             fprintf(stderr, "executing '%s'\n", cmd);
@@ -35,8 +40,8 @@ int main(int argc, char *argv[]) {
         cmd_free(cmd);
         if (err != 0)
             errx(REDIS_RUN_ERROR, "redis started ended with %d", err);
+        free(conf_name);
     } else {
-        char *password = mem_io_get_password(&params);
         while (sleep(params.timeout) > 0);
         redisContext *context = mem_io_connect(params.host, params.port,
                                                params.timeout);
@@ -45,9 +50,9 @@ int main(int argc, char *argv[]) {
                                params.nr_channels);
         mem_io_disconnect(context);
         create_mem_io_conf_file(mem_io_id, &params, password);
-        free(password);
     }
     free(mem_io_id);
+    free(password);
     finalizeCL(&params);
     return EXIT_SUCCESS;
 }
@@ -77,4 +82,25 @@ void create_mem_io_conf_file(char mem_io_id[], Params *params,
     fclose(conf_fp);
     free(hostname);
     free(conf_name);
+}
+
+void create_redis_conf_file(char mem_io_id[], Params *params,
+                            char password[]) {
+    char *conf_name = redis_conf_name(mem_io_id);
+    char *cmd = cmd_alloc(params->m4_path);
+    cmd_append_key_value_option(cmd, "--define",
+                                "REDIS_PASSWORD", password);
+    char *db_name = redis_db_name(mem_io_id);
+    cmd_append_key_value_option(cmd, "--define",
+                                "REDIS_DBFILENAME", db_name);
+    cmd_append_arg(cmd, params->redis_conf_m4, false);
+    cmd_redirect_stdout(cmd, conf_name);
+    if (params->verbose)
+        fprintf(stderr, "executing '%s'\n", cmd);
+    int err = system(cmd);
+    cmd_free(cmd);
+    if (err != 0)
+        errx(M4_RUN_ERROR, "redis started ended with %d", err);
+    free(conf_name);
+    free(db_name);
 }
