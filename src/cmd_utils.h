@@ -8,7 +8,7 @@
 char *cmd_alloc(char cmd[]);
 void cmd_append_option(char cmd[], char option[], char value[],
                        bool quote);
-void cmd_append_option_key_value(char cmd[], char option[],
+void cmd_append_key_value_option(char cmd[], char option[],
                                  char key[], char value[]);
 void cmd_append_int_option(char cmd[], char option[], int value);
 void cmd_append_arg(char cmd[], char arg[], bool quote);

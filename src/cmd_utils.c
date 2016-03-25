@@ -56,7 +56,7 @@ void cmd_append_flag(char cmd[], char flag[]) {
     cmd_append_option(cmd, flag, NULL, false);
 }
 
-void cmd_append_option_key_value(char cmd[], char option[],
+void cmd_append_key_value_option(char cmd[], char option[],
                                  char key[], char value[]) {
     int str_length = strlen(key) + 1 + 1 + strlen(value) + 1 + 1;
     char *key_value = (char *) malloc(str_length*sizeof(char));
