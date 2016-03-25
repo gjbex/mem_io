@@ -12,7 +12,7 @@ typedef struct {
 	char * mem_io_id;
 	char * redis_path;
 	char * m4_path;
-	char * redis_conf;
+	char * redis_conf_m4;
 	char * mem_io_conf;
 	int channel_id;
 	int nr_channels;
