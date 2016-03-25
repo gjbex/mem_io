@@ -26,5 +26,6 @@ char *mem_io_get_password(Params *params);
 char *mem_io_get_id(Params *params);
 char *mem_io_conf_name(char mem_io_id[]);
 char *redis_conf_name(char mem_io_id[]);
+char *redis_db_name(char mem_io_id[]);
 
 #endif
