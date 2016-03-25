@@ -56,6 +56,17 @@ void cmd_append_flag(char cmd[], char flag[]) {
     cmd_append_option(cmd, flag, NULL, false);
 }
 
+void cmd_append_option_key_value(char cmd[], char option[],
+                                 char key[], char value[]) {
+    int str_length = strlen(key) + 1 + 1 + strlen(value) + 1 + 1;
+    char *key_value = (char *) malloc(str_length*sizeof(char));
+    if (key_value == NULL)
+        errx(EXIT_FAILURE, "can not allocated key/value string");
+    snprintf(key_value, str_length, "%s='%s'", key, value);
+    cmd_append_option(cmd, option, key_value, false);
+    free(key_value);
+}
+
 void cmd_free(char *cmd) {
     free(cmd);
 }
