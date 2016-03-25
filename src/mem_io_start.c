@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include "cmd_utils.h"
@@ -36,11 +37,16 @@ int main(int argc, char *argv[]) {
         cmd_append_int_option(cmd, "--port", params.port);
         if (params.verbose)
             fprintf(stderr, "executing '%s'\n", cmd);
-        int err = system(cmd);
+        int exit_code = system(cmd);
+        if (exit_code != 0)
+            errx(REDIS_RUN_ERROR, "redis started ended with %d", exit_code);
+        char *db_name = redis_db_name(mem_io_id);
+        if (0 != chmod(db_name, S_IRUSR | S_IWUSR))
+            err(EXIT_FAILURE, "can not set file permissions on '%s'",
+                db_name);
         cmd_free(cmd);
-        if (err != 0)
-            errx(REDIS_RUN_ERROR, "redis started ended with %d", err);
         free(conf_name);
+        free(db_name);
     } else {
         while (sleep(params.timeout) > 0);
         redisContext *context = mem_io_connect(params.host, params.port,
@@ -75,6 +81,9 @@ void create_mem_io_conf_file(char mem_io_id[], Params *params,
     FILE *conf_fp = fopen(conf_name, "w");
     if (conf_fp == NULL)
         err(EXIT_FAILURE, "can not create '%s'", conf_name);
+    if (0 != chmod(conf_name, S_IRUSR | S_IWUSR))
+        err(EXIT_FAILURE, "can not set file permissions on '%s'",
+            conf_name);
     char *hostname = get_hostname();
     fprintf(conf_fp, "host = '%s'\n", hostname);
     fprintf(conf_fp, "port = %d\n", params->port);
@@ -97,10 +106,13 @@ void create_redis_conf_file(char mem_io_id[], Params *params,
     cmd_redirect_stdout(cmd, conf_name);
     if (params->verbose)
         fprintf(stderr, "executing '%s'\n", cmd);
-    int err = system(cmd);
+    int exit_code = system(cmd);
+    if (exit_code != 0)
+        errx(M4_RUN_ERROR, "redis started ended with %d", exit_code);
+    if (0 != chmod(conf_name, S_IRUSR | S_IWUSR))
+        err(EXIT_FAILURE, "can not set file permissions on '%s'",
+            conf_name);
     cmd_free(cmd);
-    if (err != 0)
-        errx(M4_RUN_ERROR, "redis started ended with %d", err);
     free(conf_name);
     free(db_name);
 }
