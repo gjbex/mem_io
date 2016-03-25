@@ -46,5 +46,7 @@ void retrieve_channel(redisContext *context, char id[], int channel_id) {
     if (nr_bytes == 0)
         warnx("no data in channel %0*d",
                 CHANNEL_ID_WIDTH, channel_id);
+    else
+        fprintf(stdout, "\n");
     free(key);
 }
