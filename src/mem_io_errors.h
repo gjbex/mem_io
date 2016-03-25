@@ -5,6 +5,7 @@
 /* redis start errors */
 #define FORK_ERROR 12
 #define REDIS_RUN_ERROR 13
+#define M4_RUN_ERROR 14
 
 /* application logic errors */
 #define ALLOC_ERROR 20
