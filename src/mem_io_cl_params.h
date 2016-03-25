@@ -11,6 +11,7 @@ typedef struct {
 	char * password;
 	char * mem_io_id;
 	char * redis_path;
+	char * m4_path;
 	char * redis_conf;
 	char * mem_io_conf;
 	int channel_id;

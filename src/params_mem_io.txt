@@ -4,6 +4,7 @@ int	timeout	2
 char *	password	''
 char *	mem_io_id	''
 char *	redis_path	'/usr/local/software/redis/3.0.7/bin/redis-server'
+char *	m4_path	'/usr/bin/m4'
 char *	redis_conf	'/home/lucg5005/redis.conf'
 char *	mem_io_conf	'.mem_io.conf'
 int	channel_id	-1

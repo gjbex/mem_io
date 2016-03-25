@@ -28,6 +28,10 @@ void initCL(Params *params) {
 	if (!(params->redis_path = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate redis_path field");
 	strncpy(params->redis_path, "/usr/local/software/redis/3.0.7/bin/redis-server", len + 1);
+	len = strlen("/usr/bin/m4");
+	if (!(params->m4_path = (char *) calloc(len + 1, sizeof(char))))
+		errx(EXIT_CL_ALLOC_FAIL, "can not allocate m4_path field");
+	strncpy(params->m4_path, "/usr/bin/m4", len + 1);
 	len = strlen("/home/lucg5005/redis.conf");
 	if (!(params->redis_conf = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate redis_conf field");
@@ -134,6 +138,22 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
 				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
 			params->redis_path = strncpy(tmp, argv_str, len + 1);
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-m4_path", 9)) {
+			shiftCL(&i, *argc, *argv);
+			argv_str = (*argv)[i];
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-m4_path' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->m4_path);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->m4_path = strncpy(tmp, argv_str, len + 1);
 			i++;
 			continue;
 		}
@@ -293,6 +313,20 @@ void parseFileCL(Params *params, char *fileName) {
 			stripQuotesCL(params->redis_path);
 			continue;
 		}
+		if (sscanf(line_str, "m4_path = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-m4_path' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->m4_path);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->m4_path = strncpy(tmp, argv_str, len + 1);
+			stripQuotesCL(params->m4_path);
+			continue;
+		}
 		if (sscanf(line_str, "redis_conf = %[^\n]", argv_str) == 1) {
 			if (!1) {
 				fprintf(stderr, "### error: invalid value for option '-redis_conf' of type char *\n");
@@ -377,6 +411,7 @@ void dumpCL(FILE *fp, char prefix[], Params *params) {
 	fprintf(fp, "%spassword = '%s'\n", prefix, params->password);
 	fprintf(fp, "%smem_io_id = '%s'\n", prefix, params->mem_io_id);
 	fprintf(fp, "%sredis_path = '%s'\n", prefix, params->redis_path);
+	fprintf(fp, "%sm4_path = '%s'\n", prefix, params->m4_path);
 	fprintf(fp, "%sredis_conf = '%s'\n", prefix, params->redis_conf);
 	fprintf(fp, "%smem_io_conf = '%s'\n", prefix, params->mem_io_conf);
 	fprintf(fp, "%schannel_id = %d\n", prefix, params->channel_id);
@@ -390,10 +425,11 @@ void finalizeCL(Params *params) {
 	free(params->password);
 	free(params->mem_io_id);
 	free(params->redis_path);
+	free(params->m4_path);
 	free(params->redis_conf);
 	free(params->mem_io_conf);
 }
 
 void printHelpCL(FILE *fp) {
-	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -redis_conf <string>\n  -mem_io_conf <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -?: print this message");
+	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf <string>\n  -mem_io_conf <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -?: print this message");
 }
