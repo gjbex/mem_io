@@ -8,8 +8,6 @@
 
 #define CHANNEL_ID_WIDTH 9
 
-extern char config_file_name[1024];
-
 redisContext *mem_io_connect(char host[], int port, int timeout_secs);
 void mem_io_auth(redisContext *context, char password[]);
 void mem_io_set_nr_channels(redisContext *context, char id[],
