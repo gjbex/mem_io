@@ -252,7 +252,7 @@ char *mem_io_get_id(Params *params) {
         } else {
             char *id = (char *) malloc((strlen(DEFAULT) + 1)*sizeof(char));
             if (id == NULL)
-                errx(ALLOC_ERROR, "can allocate default mem_io ID");
+                errx(ALLOC_ERROR, "can not allocate default mem_io ID");
             strcpy(id, DEFAULT);
             return id;
         }
@@ -321,4 +321,3 @@ void mem_io_print_type(int type) {
     else
         printf("unknown type\n");
 }
-
