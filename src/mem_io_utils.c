@@ -225,8 +225,6 @@ char *mem_io_get_password(Params *params) {
     }
 }
 
-#define DEFAULT "default"
-
 /*!
   \brief Determine the mem_io ID.
   \param params Command line and configuration file parameters.
@@ -250,10 +248,11 @@ char *mem_io_get_id(Params *params) {
         if (job_id != NULL) {
             return job_id;
         } else {
-            char *id = (char *) malloc((strlen(DEFAULT) + 1)*sizeof(char));
+            id_length = strlen(DEFAULT_MEM_IO) + 1;
+            char *id = (char *) malloc(id_length*sizeof(char));
             if (id == NULL)
                 errx(ALLOC_ERROR, "can not allocate default mem_io ID");
-            strcpy(id, DEFAULT);
+            strcpy(id, DEFAULT_MEM_IO);
             return id;
         }
     }

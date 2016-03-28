@@ -7,6 +7,7 @@
 #include "mem_io_cl_params.h"
 
 #define CHANNEL_ID_WIDTH 9
+#define DEFAULT_MEM_IO "default"
 
 redisContext *mem_io_connect(char host[], int port, int timeout_secs);
 void mem_io_auth(redisContext *context, char password[]);
