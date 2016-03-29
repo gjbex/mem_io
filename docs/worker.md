@@ -14,7 +14,7 @@ module load mem_io
 
 some_program  "some_input_${id}"  |  mem_io_store  -channel_id ${id}
 ```
-Note that the channel ID should be in the range 0 to number of channels - 1, inclusive.
+Note that the channel ID (i.e., the `$id` variable in this example) should be in the range 0 to number of channels - 1, inclusive.
 
 The worker epilog file will retrieve the data, save it to a file `all_output`, and stop mem_io:
 ```
