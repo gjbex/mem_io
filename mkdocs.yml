@@ -3,5 +3,6 @@ site_description: mem_io provides an (almost)  parallel I/O framework using an i
 site_author: Geert Jan Bex (geertjan.bex@uhasselt.be)
 pages:
 - Introduction and motivation: 'index.md'
+- Contact information: 'contact.md'
 site_dir: html_docs/mem_io
 theme: readthedocs
