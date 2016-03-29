@@ -1,0 +1,7 @@
+site_name: mem_io documentation
+site_description: mem_io provides an (almost)  parallel I/O framework using an in-memory database and stardard output redirection
+site_author: Geert Jan Bex (geertjan.bex@uhasselt.be)
+pages:
+- Introduction and motivation: 'index.md'
+site_dir: html_docs/mem_io
+theme: readthedocs
