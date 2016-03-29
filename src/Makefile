@@ -38,12 +38,8 @@ clean:
 	rm -f $(APPL) *.o
 
 install: all
-	install mem_io_set_password $(INSTALL_DIR)/bin
-	install mem_io_start $(INSTALL_DIR)/bin
-	install mem_io_store $(INSTALL_DIR)/bin
-	install mem_io_retrieve $(INSTALL_DIR)/bin
-	install mem_io_stop $(INSTALL_DIR)/bin
-	install mem_io_stop $(INSTALL_DIR)/bin
+	install -d $(INSTALL_DIR)/bin
+	install $(APPL) $(INSTALL_DIR)/bin/
 
 weave:
 	weave -l C -d params_mem_io.txt -b mem_io_cl_params
