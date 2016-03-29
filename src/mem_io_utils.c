@@ -65,6 +65,7 @@ void mem_io_set_nr_channels(redisContext *context, char mem_io_id[],
     if (reply->type == REDIS_REPLY_ERROR)
         errx(SET_ERROR, "SET for '%s' failed: %s", key, reply->str);
     freeReplyObject(reply);
+    free(key);
 }
 
 /*!
@@ -80,6 +81,7 @@ int mem_io_get_nr_channels(redisContext *context, char mem_io_id[]) {
         errx(GET_ERROR, "GET for '%s' failed: %s", key, reply->str);
     int value = atoi(reply->str);
     freeReplyObject(reply);
+    free(key);
     return value;
 }
 
