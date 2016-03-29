@@ -11,8 +11,9 @@ int main(int argc, char *argv[]) {
     parseCL(&params, &argc, &argv);
     char *mem_io_id = mem_io_get_id(&params);
     mem_io_merge_params(mem_io_id, &params);
-    if (params.verbose)
+    if (params.verbose) {
         dumpCL(stderr, "# ", &params);
+    }
     redisContext *context = mem_io_connect(params.host, params.port,
                                            params.timeout);
     mem_io_auth(context, params.password);

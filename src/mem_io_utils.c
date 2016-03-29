@@ -203,6 +203,8 @@ char *mem_io_get_password(Params *params) {
         return tmp;
     } else {
         char *conf_path = mem_io_get_conf_path(params->mem_io_conf);
+        if (params->verbose)
+            fprintf(stderr, "# reading config file '%s'\n", conf_path);
         if (file_exists(conf_path)) {
             char *tmp = (char *) malloc(MAX_LENGTH*sizeof(char));
             bool read_password = false;
