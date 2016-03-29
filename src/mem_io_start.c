@@ -1,4 +1,5 @@
 #include <err.h>
+#include <libgen.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -93,6 +94,22 @@ void create_mem_io_conf_file(char mem_io_id[], Params *params,
     free(conf_name);
 }
 
+char *get_redis_conf_m4_path(Params *params) {
+    char exec_path[MAX_LENGTH];
+    ssize_t nr_bytes = readlink("/proc/self/exe", exec_path, MAX_LENGTH);
+    if (nr_bytes < 0)
+        err(EXIT_FAILURE, "can not determine executable path");
+    char *dir = dirname(exec_path);
+    int str_len = strlen(dir) + 1 + strlen(params->redis_conf_path) +
+        1 + strlen(params->redis_conf_m4) + 1;
+    char *redis_m4 = (char *) malloc(str_len*sizeof(char));
+    if (redis_m4 == NULL)
+        errx(EXIT_FAILURE, "can not allocate redis m4 template path");
+    snprintf(redis_m4, str_len, "%s/%s/%s", dir, params->redis_conf_path,
+             params->redis_conf_m4);
+    return redis_m4;
+}
+
 void create_redis_conf_file(char mem_io_id[], Params *params,
                             char password[]) {
     char *conf_name = redis_conf_name(mem_io_id);
@@ -102,7 +119,8 @@ void create_redis_conf_file(char mem_io_id[], Params *params,
     char *db_name = redis_db_name(mem_io_id);
     cmd_append_key_value_option(cmd, "--define",
                                 "REDIS_DBFILENAME", db_name);
-    cmd_append_arg(cmd, params->redis_conf_m4, false);
+    char *redis_conf_m4 = get_redis_conf_m4_path(params);
+    cmd_append_arg(cmd, redis_conf_m4, false);
     cmd_redirect_stdout(cmd, conf_name);
     if (params->verbose)
         fprintf(stderr, "executing '%s'\n", cmd);
