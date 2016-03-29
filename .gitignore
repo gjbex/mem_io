@@ -34,3 +34,6 @@
 # backup files
 *~
 *.swp
+
+# bin directory
+bin
