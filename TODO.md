@@ -1,8 +1,7 @@
 # To do
 
 ## Must do
-1. Write documentation.
-1. Update README
+1. Provide restart mode for mem_io_start.
 
 ## Nice to have
 1. Create specific cl files per application.
