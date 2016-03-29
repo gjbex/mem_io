@@ -1,4 +1,4 @@
-# `mem_io`
+# mem_io
 Lots of I/O, really, really fast.
 
 ## What is it?
