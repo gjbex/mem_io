@@ -16,4 +16,4 @@ Although it is possible to tune parallel file systems for such workloads, this i
 1. redis (http://redis.io/), an open source data structure server.
 
 ## Documentation
-See http://mem_io_readthedocs.org/.
+See http://mem-io.readthedocs.org/
