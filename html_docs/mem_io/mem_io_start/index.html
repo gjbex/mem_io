@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Geert Jan Bex (geertjan.bex@uhasselt.be)">
+  
+  <title>Starting mem_io - mem_io documentation</title>
+  
+
+  <link rel="shortcut icon" href="../img/favicon.ico">
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="../css/highlight.css">
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Starting mem_io";
+    var mkdocs_page_input_path = "mem_io_start.md";
+    var mkdocs_page_url = "/mem_io_start/";
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js"></script>
+  <script src="../js/modernizr-2.8.3.min.js"></script>
+  <script type="text/javascript" src="../js/highlight.pack.js"></script>
+  <script src="../js/theme.js"></script> 
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> mem_io documentation</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        <ul class="current">
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="..">Introduction and motivation</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../usage/">Use case</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../worker/">Using mem_io with worker</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <ul class="subnav">
+    <li><span>Commands</span></li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../mem_io_set_password/">Setting your mem_io password</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Starting mem_io</a>
+        
+            <ul>
+            
+            </ul>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../mem_io_store/">Writing data to mem_io</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../mem_io_retrieve/">Retrieving data from mem_io</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../mem_io_stop/">Stopping mem_io</a>
+        
+    </li>
+
+        
+    </ul>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../database/">mem_io database description</a>
+        
+    </li>
+<li>
+          
+            <li>
+    <li class="toctree-l1 ">
+        <a class="" href="../contact/">Contact information</a>
+        
+    </li>
+<li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">mem_io documentation</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+        
+          <li>Commands &raquo;</li>
+        
+      
+    
+    <li>Starting mem_io</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <p>For each job, the first thing to do is to start mem_io.  This is done using the <code>mem_io_start</code> command.  This will:
+<em> create a run-specific mem_io configuration file,
+</em> create a run-specific redis configuration file, and
+* start the redis database in the background.</p>
+<p>Each mem_io run is identified by a mem_io ID, which is intended to be unique.  it can either be specified on the command line using the <code>-mem_io_id</code> option, taken for the <code>PBS_JOBID</code> environment variable, or default to <code>default</code> (which is of course not unique, and will overwrite data from from previous runs with that mem_io ID).</p>
+<p>The mem_io configuration file will be created in the current working directory and its name has the following pattern <code>mem_io_&lt;mem_io_id&gt;.conf</code>.  Since this file contains the password, care is taken that it is creaed with the correct file permissions.</p>
+<p>The redis configuration file will be created in the current working directory and its name has the following pattern <code>redis_&lt;mem_io_id&gt;.conf</code>.  Since this file contains the password, care is taken that it is creaed with the correct file permissions.</p>
+<p>Upon starting mem_io, you have to specify the number of I/O channels to use.  These are independent storage entries in the database, and each store operation will append information to a specific channel, identified by a channel ID.  In practice, the number of channels is typically equal to the number of files that would have been produced by the job if mem_io were not used.</p>
+<p>Hence, starting mem_io with, e.g., 20 channels would be accomplished by:</p>
+<pre><code>mem_io_start  -nr_channels 20
+</code></pre>
+
+<p>The resulting on-disk database file will named according to the following pattern: <code>mem_io_&lt;mem_io_id&gt;.rdb</code>.</p>
+<p>Note that mem_io is only started once per job, either in the PBS user prologue file, the worker prolog script, or at the start of your PBS job script.  Hence this command <em>should never</em> occor in a worker batch script!</p>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../mem_io_store/" class="btn btn-neutral float-right" title="Writing data to mem_io">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../mem_io_set_password/" class="btn btn-neutral" title="Setting your mem_io password"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+	  
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+<div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../mem_io_set_password/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../mem_io_store/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+
+</body>
+</html>
