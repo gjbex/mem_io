@@ -308,6 +308,42 @@ char *redis_db_name(char mem_io_id[]) {
     return conf_name(REDIS_PREFIX, mem_io_id, REDIS_DB_EXT);
 }
 
+/*!
+  \brief Merge parameters specified on the command line with those in
+         the session mem_io configuration file
+  \param mem_io_id mem_io ID to use.
+  \param params Parameters passed via the command line
+*/
+void mem_io_merge_params(char mem_io_id[], Params *params) {
+    char *conf_name = mem_io_conf_name(mem_io_id);
+    if (file_exists(conf_name)) {
+        Params conf_params;
+        initCL(&conf_params);
+        parseFileCL(&conf_params, conf_name);
+        if (strlen(params->password) == 0) {
+            free(params->password);
+            int str_len = strlen(conf_params.password) + 1;
+            params->password = (char *) malloc(str_len*sizeof(char));
+            if (params->password == NULL)
+                errx(ALLOC_ERROR, "can not allocate password string");
+            strncpy(params->password, conf_params.password, str_len);
+        }
+        if (strlen(params->host) == 0) {
+            free(params->host);
+            int str_len = strlen(conf_params.host) + 1;
+            params->host = (char *) malloc(str_len*sizeof(char));
+            if (params->host == NULL)
+                errx(ALLOC_ERROR, "can not allocate host string");
+            strncpy(params->host, conf_params.host, str_len);
+        }
+        if (params->port == REDIS_DEFAULT_PORT) {
+            params->port = conf_params.port;
+        }
+        finalizeCL(&conf_params);
+    }
+    free(conf_name);
+}
+
 void mem_io_print_type(int type) {
     if (type == REDIS_REPLY_INTEGER)
         printf("integer\n");

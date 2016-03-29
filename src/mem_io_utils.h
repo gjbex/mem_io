@@ -8,6 +8,7 @@
 
 #define CHANNEL_ID_WIDTH 9
 #define DEFAULT_MEM_IO "default"
+#define REDIS_DEFAULT_PORT 6379
 
 redisContext *mem_io_connect(char host[], int port, int timeout_secs);
 void mem_io_auth(redisContext *context, char password[]);
@@ -24,6 +25,7 @@ char *mem_io_create_meta_key(char id[], char spec[]);
 char *mem_io_get_password(Params *params);
 char *mem_io_get_id(Params *params);
 char *mem_io_conf_name(char mem_io_id[]);
+void mem_io_merge_params(char mem_io_id[], Params *params);
 char *redis_conf_name(char mem_io_id[]);
 char *redis_db_name(char mem_io_id[]);
 
