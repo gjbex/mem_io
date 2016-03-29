@@ -2,6 +2,7 @@ CC = gcc
 CFLAGS = -O2 -g -Wall -std=c99 -D_POSIX_SOURCE -D_BSD_SOURCE
 CPPFLAGS = `pkg-config --cflags hiredis`
 LDFLAGS = `pkg-config --libs hiredis`
+INSTALL_DIR = ../
 
 APPL = mem_io_start mem_io_store mem_io_retrieve mem_io_stop \
        mem_io_set_password
@@ -35,6 +36,14 @@ mem_io_set_password: $(MEM_IO_SET_PASSWORD_OBJS)
 
 clean:
 	rm -f $(APPL) *.o
+
+install: all
+	install mem_io_set_password $(INSTALL_DIR)/bin
+	install mem_io_start $(INSTALL_DIR)/bin
+	install mem_io_store $(INSTALL_DIR)/bin
+	install mem_io_retrieve $(INSTALL_DIR)/bin
+	install mem_io_stop $(INSTALL_DIR)/bin
+	install mem_io_stop $(INSTALL_DIR)/bin
 
 weave:
 	weave -l C -d params_mem_io.txt -b mem_io_cl_params
