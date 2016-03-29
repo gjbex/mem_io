@@ -3,6 +3,15 @@ site_description: mem_io provides an (almost)  parallel I/O framework using an i
 site_author: Geert Jan Bex (geertjan.bex@uhasselt.be)
 pages:
 - Introduction and motivation: 'index.md'
+- Use case: 'usage.md'
+- Using mem_io with worker: 'worker.md'
+- Commands:
+    - Setting your mem_io password: 'mem_io_set_password.md'
+    - Starting mem_io: 'mem_io_start.md'
+    - Writing data to mem_io: 'mem_io_store.md'
+    - Retrieving data from mem_io: 'mem_io_retrieve.md'
+    - Stopping mem_io: 'mem_io_stop.md'
+- mem_io database description: 'database.md'
 - Contact information: 'contact.md'
 site_dir: html_docs/mem_io
 theme: readthedocs
