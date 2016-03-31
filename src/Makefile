@@ -40,6 +40,8 @@ clean:
 install: all
 	install -d $(INSTALL_DIR)/bin
 	install $(APPL) $(INSTALL_DIR)/bin/
+	install -d $(INSTALL_DIR)/share/mem_io
+	install redis.conf.m4 $(INSTALL_DIR)/share/mem_io
 
 weave:
 	weave -l C -d params_mem_io.txt -b mem_io_cl_params
