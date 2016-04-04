@@ -5,4 +5,5 @@ mem_io_stop
 mem_io_set_password
 *.rdb
 .mem_io.conf
-mem_io_*.conf
+mem_io_default.conf
+mem_io_[0-9][0-9]*.conf
