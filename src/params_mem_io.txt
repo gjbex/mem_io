@@ -1,4 +1,4 @@
-char *	host	'localhost'
+char *	host	''
 int	port	6379
 int	timeout	2
 char *	password	''

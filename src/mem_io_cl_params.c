@@ -10,10 +10,10 @@
 
 void initCL(Params *params) {
 	int len;
-	len = strlen("localhost");
+	len = strlen("");
 	if (!(params->host = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate host field");
-	strncpy(params->host, "localhost", len + 1);
+	strncpy(params->host, "", len + 1);
 	params->port = 6379;
 	params->timeout = 2;
 	len = strlen("");
@@ -24,10 +24,10 @@ void initCL(Params *params) {
 	if (!(params->mem_io_id = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate mem_io_id field");
 	strncpy(params->mem_io_id, "", len + 1);
-	len = strlen("/usr/local/software/redis/3.0.7/bin/redis-server");
+	len = strlen("/apps/leuven/thinking/2015a/software/redis/3.0.7/bin/redis-server");
 	if (!(params->redis_path = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate redis_path field");
-	strncpy(params->redis_path, "/usr/local/software/redis/3.0.7/bin/redis-server", len + 1);
+	strncpy(params->redis_path, "/apps/leuven/thinking/2015a/software/redis/3.0.7/bin/redis-server", len + 1);
 	len = strlen("/usr/bin/m4");
 	if (!(params->m4_path = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate m4_path field");
