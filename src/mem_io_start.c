@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
         free(db_name);
     } else {
         while (sleep(params.timeout) > 0);
-        redisContext *context = mem_io_connect(params.host, params.port,
+        redisContext *context = mem_io_connect("localhost", params.port,
                                                params.timeout);
         mem_io_auth(context, password);
         mem_io_set_nr_channels(context, mem_io_id,
@@ -65,14 +65,17 @@ int main(int argc, char *argv[]) {
 }
 
 #define MAX_LENGTH 1024
+#define DOMAIN_NAME "thinking.leuven.vsc"
 
 char *get_hostname(void) {
+    char nodename[MAX_LENGTH];
     char *hostname = (char *) malloc(MAX_LENGTH*sizeof(char));
     if (hostname == NULL)
         errx(ALLOC_ERROR, "can not allocate hostname");
-    int exit_code = gethostname(hostname, MAX_LENGTH);
+    int exit_code = gethostname(nodename, MAX_LENGTH);
     if (exit_code != 0)
         errx(HOSTNAME_ERROR, "can not determine hostname");
+    snprintf(hostname, MAX_LENGTH, "%s.%s", nodename, DOMAIN_NAME);
     return hostname;
 }
 
