@@ -285,6 +285,11 @@ char *mem_io_conf_name(char mem_io_id[]) {
     return conf_name(MEM_IO_CONF_PREFIX, mem_io_id, MEM_IO_CONF_EXT);
 }
 
+/*!
+  \brief Generate the name of the global mem_io configuration file
+  \return char* Name of the global mem_io configuration file
+*/
+
 #define REDIS_PREFIX "redis_"
 #define REDIS_CONF_EXT ".conf"
 

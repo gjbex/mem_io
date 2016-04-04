@@ -19,6 +19,8 @@ void create_redis_conf_file(char mem_io_id[], Params *params,
 int main(int argc, char *argv[]) {
     Params params;
     initCL(&params);
+    char *global_conf_name = get_mem_io_global_conf_path(params);
+    parseFileCL(&params, global_conf_name);
     parseCL(&params, &argc, &argv);
     if (params.verbose)
         dumpCL(stderr, "# ", &params);
@@ -109,20 +111,28 @@ void create_mem_io_conf_file(char mem_io_id[], Params *params,
     free(conf_name);
 }
 
-char *get_redis_conf_m4_path(Params *params) {
+char *get_global_conf_path(Params *params, char file_name[]) {
     char exec_path[MAX_LENGTH];
     ssize_t nr_bytes = readlink("/proc/self/exe", exec_path, MAX_LENGTH);
     if (nr_bytes < 0)
         err(EXIT_FAILURE, "can not determine executable path");
     char *dir = dirname(exec_path);
     int str_len = strlen(dir) + 1 + strlen(params->redis_conf_path) +
-        1 + strlen(params->redis_conf_m4) + 1;
+        1 + strlen(file_name) + 1;
     char *redis_m4 = (char *) malloc(str_len*sizeof(char));
     if (redis_m4 == NULL)
         errx(EXIT_FAILURE, "can not allocate redis m4 template path");
     snprintf(redis_m4, str_len, "%s/%s/%s", dir, params->redis_conf_path,
-             params->redis_conf_m4);
+             file_name);
     return redis_m4;
+}
+
+char *get_redis_conf_m4_path(Params *params) {
+    return get_global_conf_path(params, params->redis_conf_m4);
+}
+
+char *get_mem_io_global_conf_path(Params *params) {
+    return get_global_conf_path(params, params->global_conf);
 }
 
 void create_redis_conf_file(char mem_io_id[], Params *params,
