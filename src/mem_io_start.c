@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "executing '%s'\n", cmd);
         int exit_code = system(cmd);
         if (exit_code != 0)
-            errx(REDIS_RUN_ERROR, "redis started ended with %d", exit_code);
+            errx(REDIS_RUN_ERROR, "redis startup ended with %d", exit_code);
         char *db_name = redis_db_name(mem_io_id);
         if (0 != chmod(db_name, S_IRUSR | S_IWUSR))
             err(EXIT_FAILURE, "can not set file permissions on '%s'",
