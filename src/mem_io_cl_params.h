@@ -14,7 +14,9 @@ typedef struct {
 	char * m4_path;
 	char * redis_conf_path;
 	char * redis_conf_m4;
+	char * global_conf;
 	char * mem_io_conf;
+	char * domain_name;
 	int channel_id;
 	int nr_channels;
 	bool verbose;
