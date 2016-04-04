@@ -48,3 +48,6 @@ weave:
 
 weave_clean:
 	rm -f mem_io_cl_params.[ch] mem_io_cl_params_aux.[ch]
+
+tags:
+	ctags .
