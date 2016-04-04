@@ -19,6 +19,7 @@ typedef struct {
 	int nr_channels;
 	bool verbose;
 	bool force;
+	bool restart;
 } Params;
 
 void initCL(Params *params);

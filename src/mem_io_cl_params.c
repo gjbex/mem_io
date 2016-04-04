@@ -48,6 +48,7 @@ void initCL(Params *params) {
 	params->nr_channels = -1;
 	params->verbose = false;
 	params->force = false;
+	params->restart = false;
 }
 
 void parseCL(Params *params, int *argc, char **argv[]) {
@@ -238,6 +239,11 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 		}
 		if (!strncmp((*argv)[i], "-force", 7)) {
 			params->force = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-restart", 9)) {
+			params->restart = true;
 			i++;
 			continue;
 		}
@@ -433,6 +439,20 @@ void parseFileCL(Params *params, char *fileName) {
 			}
 			continue;
 		}
+		if (sscanf(line_str, "restart = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-restart' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->restart = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->restart = true;
+			} else {
+				params->restart = atoi(argv_str);
+			}
+			continue;
+		}
 		fprintf(stderr, "### warning, line can not be parsed: '%s'\n", line_str);
 	}
 	fclose(fp);
@@ -453,6 +473,7 @@ void dumpCL(FILE *fp, char prefix[], Params *params) {
 	fprintf(fp, "%snr_channels = %d\n", prefix, params->nr_channels);
 	fprintf(fp, "%sverbose = %d\n", prefix, params->verbose);
 	fprintf(fp, "%sforce = %d\n", prefix, params->force);
+	fprintf(fp, "%srestart = %d\n", prefix, params->restart);
 }
 
 void finalizeCL(Params *params) {
@@ -467,5 +488,5 @@ void finalizeCL(Params *params) {
 }
 
 void printHelpCL(FILE *fp) {
-	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -mem_io_conf <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -?: print this message");
+	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -mem_io_conf <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -restart\n  -?: print this message");
 }
