@@ -1,8 +1,5 @@
 # To do
 
-## Must do
-1. Provide restart mode for mem_io_start.
-
 ## Nice to have
 1. Create specific cl files per application.
 1. Write an application to retrieve data from all channels, storing it in
