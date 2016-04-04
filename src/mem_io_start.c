@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 #define MAX_LENGTH 1024
 #define DOMAIN_NAME "thinking.leuven.vsc"
 
-char *get_hostname(void) {
+char *get_hostname(Params *params) {
     char nodename[MAX_LENGTH];
     char *hostname = (char *) malloc(MAX_LENGTH*sizeof(char));
     if (hostname == NULL)
@@ -75,23 +75,35 @@ char *get_hostname(void) {
     int exit_code = gethostname(nodename, MAX_LENGTH);
     if (exit_code != 0)
         errx(HOSTNAME_ERROR, "can not determine hostname");
-    snprintf(hostname, MAX_LENGTH, "%s.%s", nodename, DOMAIN_NAME);
+    if (0 == strlen(params->domain_name))
+        snprintf(hostname, MAX_LENGTH, "%s", nodename);
+    else
+        snprintf(hostname, MAX_LENGTH, "%s.%s", nodename, DOMAIN_NAME);
     return hostname;
 }
 
 void create_mem_io_conf_file(char mem_io_id[], Params *params,
                              char password[]) {
     char *conf_name = mem_io_conf_name(mem_io_id);
+    char orig_password[MAX_LENGTH];
+    if (file_exists(conf_name) && params->restart) {
+        Params tmp_params;
+        initCL(&tmp_params);
+        parseFileCL(&tmp_params, conf_name);
+        strncpy(orig_password, tmp_params.password, MAX_LENGTH);
+        finalizeCL(&tmp_params);
+    }
     FILE *conf_fp = fopen(conf_name, "w");
     if (conf_fp == NULL)
         err(EXIT_FAILURE, "can not create '%s'", conf_name);
     if (0 != chmod(conf_name, S_IRUSR | S_IWUSR))
         err(EXIT_FAILURE, "can not set file permissions on '%s'",
             conf_name);
-    char *hostname = get_hostname();
+    char *hostname = get_hostname(params);
     fprintf(conf_fp, "host = '%s'\n", hostname);
     fprintf(conf_fp, "port = %d\n", params->port);
-    fprintf(conf_fp, "password = '%s'\n", password);
+    fprintf(conf_fp, "password = '%s'\n",
+            params->restart ? orig_password : password);
     fclose(conf_fp);
     free(hostname);
     free(conf_name);
