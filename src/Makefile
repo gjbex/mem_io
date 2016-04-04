@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -O2 -g -Wall -std=c99 -D_POSIX_SOURCE -D_BSD_SOURCE
 CPPFLAGS = `pkg-config --cflags hiredis`
-LDFLAGS = `pkg-config --libs hiredis`
+LDFLAGS = -static `pkg-config --libs hiredis`
 INSTALL_DIR = ../
 
 APPL = mem_io_start mem_io_store mem_io_retrieve mem_io_stop \
