@@ -62,6 +62,7 @@ int main(int argc, char *argv[]) {
     }
     free(mem_io_id);
     free(password);
+    free(global_conf_name);
     finalizeCL(&params);
     return EXIT_SUCCESS;
 }
