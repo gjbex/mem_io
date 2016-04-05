@@ -132,6 +132,40 @@ long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
 }
 
 /*!
+  \brief Modify the specified channel's status.
+  \param context Redis database context to work in.
+  \param key Redis key to store status information in.
+  \param status Status string to set, either 'open' or 'closed'
+*/
+void mem_io_set_channel_status(redisContext *context, char key[],
+                               char status[]) {
+    redisReply *reply = redisCommand(context, "SET %b %b",
+                                     key, strlen(key),
+                                     status, strlen(status) + 1);
+    if (reply->type == REDIS_REPLY_ERROR)
+        errx(SET_ERROR, "SET for '%s' failed: %s", key, reply->str);
+    freeReplyObject(reply);
+}
+
+/*!
+  \brief Open the specified channel.
+  \param context Redis database context to work in.
+  \param key Redis key to set 'open' value in.
+*/
+void mem_io_open_channel(redisContext *context, char key[]) {
+    mem_io_set_channel_status(context, key, "open");
+}
+
+/*!
+  \brief Close the specified channel.
+  \param context Redis database context to work in.
+  \param key Redis key to set 'close' value in.
+*/
+void mem_io_close_channel(redisContext *context, char key[]) {
+    mem_io_set_channel_status(context, key, "closed");
+}
+
+/*!
   \brief Stop the redis database by performing a shutdown.
   \param context Redis database context to work in.
 */
@@ -182,6 +216,26 @@ char *mem_io_create_meta_key(char mem_io_id[], char spec[]) {
     if (key == NULL)
         errx(ALLOC_ERROR, "can not allocate key of length %d", key_length);
     snprintf(key,  key_length, "%s%s%s", mem_io_id, qualifier, spec);
+    return key;
+}
+
+/*!
+  \brief Create a redis database key for storing status information about
+         the given channel.
+  \param mem_io_id mem_io identifier string to use.
+  \param channel_id Channel ID to store the status of.
+              for.
+  \return char* The key to access the given channel's status information.
+*/
+char *mem_io_create_channel_status_key(char mem_io_id[], int channel_id) {
+    char qualifier[80] = ":meta:status:";
+    int key_length = strlen(mem_io_id) + strlen(qualifier) +
+        CHANNEL_ID_WIDTH + 1;
+    char *key = (char *) malloc(key_length*sizeof(char));
+    if (key == NULL)
+        errx(ALLOC_ERROR, "can not allocate key of length %d", key_length);
+    snprintf(key,  key_length, "%s%s%0*d", mem_io_id, qualifier,
+             CHANNEL_ID_WIDTH, channel_id);
     return key;
 }
 
