@@ -11,6 +11,7 @@
 #include "mem_io_utils.h"
 #include "mem_io_cl_params.h"
 
+char *get_mem_io_global_conf_path(Params *params);
 void create_mem_io_conf_file(char mem_io_id[], Params *params,
                              char password[]);
 void create_redis_conf_file(char mem_io_id[], Params *params,
@@ -19,12 +20,12 @@ void create_redis_conf_file(char mem_io_id[], Params *params,
 int main(int argc, char *argv[]) {
     Params params;
     initCL(&params);
-    char *global_conf_name = get_mem_io_global_conf_path(params);
+    char *global_conf_name = get_mem_io_global_conf_path(&params);
     parseFileCL(&params, global_conf_name);
     parseCL(&params, &argc, &argv);
     if (params.verbose)
         dumpCL(stderr, "# ", &params);
-    if (params.nr_channels <= 0)
+    if (!params.restart && params.nr_channels <= 0)
         errx(INVALID_NR_CHANNELS, "invalid number of channels %d",
              params.nr_channels);
     char *mem_io_id = mem_io_get_id(&params);
@@ -51,13 +52,15 @@ int main(int argc, char *argv[]) {
         free(conf_name);
         free(db_name);
     } else {
-        while (sleep(params.timeout) > 0);
-        redisContext *context = mem_io_connect("localhost", params.port,
-                                               params.timeout);
-        mem_io_auth(context, password);
-        mem_io_set_nr_channels(context, mem_io_id,
-                               params.nr_channels);
-        mem_io_disconnect(context);
+        if (!params.restart) {
+            while (sleep(params.timeout) > 0);
+            redisContext *context = mem_io_connect("localhost", params.port,
+                                                   params.timeout);
+            mem_io_auth(context, password);
+            mem_io_set_nr_channels(context, mem_io_id,
+                                   params.nr_channels);
+            mem_io_disconnect(context);
+        }
         create_mem_io_conf_file(mem_io_id, &params, password);
     }
     free(mem_io_id);
