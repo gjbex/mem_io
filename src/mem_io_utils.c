@@ -166,6 +166,36 @@ void mem_io_close_channel(redisContext *context, char key[]) {
 }
 
 /*!
+  \brief Check whether channel status information has been set for the
+         given key
+  \param context Redis database context to work in.
+  \param key Redis key to check for.
+ */
+bool mem_io_channel_status_is_set(redisContext *context, char key[]) {
+    redisReply *reply = redisCommand(context, "GET %b",
+                                     key, strlen(key));
+    bool result = !(reply->type == REDIS_REPLY_ERROR);
+    freeReplyObject(reply);
+    return result;
+}
+
+/*!
+  \brief Check whether channel status information has been set for the
+         given key
+  \param context Redis database context to work in.
+  \param key Redis key to check for.
+ */
+bool mem_io_is_channel_open(redisContext *context, char key[]) {
+    redisReply *reply = redisCommand(context, "GET %b",
+                                     key, strlen(key));
+    if (reply->type == REDIS_REPLY_ERROR)
+        errx(GET_ERROR, "GET for '%s' failed: %s", key, reply->str);
+    bool result = (0 == strncmp(reply->str, "open", strlen("open") + 1));
+    freeReplyObject(reply);
+    return result;
+}
+
+/*!
   \brief Stop the redis database by performing a shutdown.
   \param context Redis database context to work in.
 */

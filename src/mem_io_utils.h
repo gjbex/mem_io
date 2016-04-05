@@ -22,6 +22,8 @@ void mem_io_set_channel_status(redisContext *context, char key[],
                                char status[]);
 void mem_io_open_channel(redisContext *context, char key[]);
 void mem_io_close_channel(redisContext *context, char key[]);
+bool mem_io_channel_status_is_set(redisContext *context, char key[]);
+bool mem_io_is_channel_open(redisContext *context, char key[]);
 void mem_io_shutdown(redisContext *context);
 void mem_io_disconnect(redisContext *context);
 char *mem_io_create_key(char id[], int channel_id);
