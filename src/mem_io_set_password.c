@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <termios.h>
+#include <time.h>
 #include <unistd.h>
 
 #include "cmd_utils.h"
@@ -11,8 +13,10 @@
 
 #define PATH_LENGTH 1024
 #define PASSWD_LENGTH 1024
+#define PASSWD_RND_LENGTH 64
 
 void cli_get_passwd(char password[], int max_length);
+void generate_passwd(char password[], int length);
 
 int main(int argc, char *argv[]) {
     Params params;
@@ -25,7 +29,10 @@ int main(int argc, char *argv[]) {
     snprintf(conf_path, PATH_LENGTH, "%s/%s", home_dir, params.mem_io_conf);
     if (!file_exists(conf_path) || params.force) {
         char passwd[PASSWD_LENGTH];
-        cli_get_passwd(passwd, PASSWD_LENGTH);
+        if (params.random)
+            generate_passwd(passwd, PASSWD_RND_LENGTH);
+        else
+            cli_get_passwd(passwd, PASSWD_LENGTH);
         if (params.verbose)
             fprintf(stderr, "password '%s' to file '%s'\n", passwd,
                     conf_path);
@@ -67,3 +74,13 @@ void cli_get_passwd(char password[], int max_length) {
         err(EXIT_FAILURE, "can restore terminal attributes");
 }
 
+void generate_passwd(char password[], int length) {
+    pid_t pid = getpid();
+    time_t current_time = time(NULL);
+    unsigned int seed = current_time/pid;
+    srand(seed);
+    for (int i = 0; i < abs(pid); i++)
+        rand();
+    for (int i = 0; i < length; i++)
+        password[i] = 'A' + (rand() % 26);
+}

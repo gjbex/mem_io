@@ -57,6 +57,7 @@ void initCL(Params *params) {
 	params->verbose = false;
 	params->force = false;
 	params->restart = false;
+	params->random = false;
 }
 
 void parseCL(Params *params, int *argc, char **argv[]) {
@@ -284,6 +285,11 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 		}
 		if (!strncmp((*argv)[i], "-restart", 9)) {
 			params->restart = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-random", 8)) {
+			params->random = true;
 			i++;
 			continue;
 		}
@@ -521,6 +527,20 @@ void parseFileCL(Params *params, char *fileName) {
 			}
 			continue;
 		}
+		if (sscanf(line_str, "random = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-random' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->random = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->random = true;
+			} else {
+				params->random = atoi(argv_str);
+			}
+			continue;
+		}
 		fprintf(stderr, "### warning, line can not be parsed: '%s'\n", line_str);
 	}
 	fclose(fp);
@@ -544,6 +564,7 @@ void dumpCL(FILE *fp, char prefix[], Params *params) {
 	fprintf(fp, "%sverbose = %d\n", prefix, params->verbose);
 	fprintf(fp, "%sforce = %d\n", prefix, params->force);
 	fprintf(fp, "%srestart = %d\n", prefix, params->restart);
+	fprintf(fp, "%srandom = %d\n", prefix, params->random);
 }
 
 void finalizeCL(Params *params) {
@@ -560,5 +581,5 @@ void finalizeCL(Params *params) {
 }
 
 void printHelpCL(FILE *fp) {
-	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -global_conf <string>\n  -mem_io_conf <string>\n  -domain_name <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -restart\n  -?: print this message");
+	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -global_conf <string>\n  -mem_io_conf <string>\n  -domain_name <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -restart\n  -random\n  -?: print this message");
 }

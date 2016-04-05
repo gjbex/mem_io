@@ -22,6 +22,7 @@ typedef struct {
 	bool verbose;
 	bool force;
 	bool restart;
+	bool random;
 } Params;
 
 void initCL(Params *params);
