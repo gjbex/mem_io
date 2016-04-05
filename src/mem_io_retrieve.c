@@ -23,11 +23,17 @@ int main(int argc, char *argv[]) {
     mem_io_auth(context, params.password);
     int nr_channels = mem_io_get_nr_channels(context, mem_io_id);
     if (0 <= params.channel_id) {
+        if (params.verbose)
+            fprintf(stderr, "# retrieving data from channel %d\n",
+                    params.channel_id);
         if (params.channel_id >= nr_channels)
             errx(INVALID_CHANNEL_ERROR, "invalid channel ID %d",
                  params.channel_id);
         retrieve_channel(context, mem_io_id, params.channel_id);
     } else {
+        if (params.verbose)
+            fprintf(stderr, "# retrieving data from %d channels\n",
+                    nr_channels);
         for (int channel_id = 0; channel_id < nr_channels;
                 channel_id++) {
             retrieve_channel(context, mem_io_id, channel_id);
