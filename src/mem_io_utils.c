@@ -186,6 +186,8 @@ bool mem_io_channel_status_is_set(redisContext *context, char key[]) {
   \param key Redis key to check for.
  */
 bool mem_io_is_channel_open(redisContext *context, char key[]) {
+    if (!mem_io_channel_status_is_set(context, key))
+        return false;
     redisReply *reply = redisCommand(context, "GET %b",
                                      key, strlen(key));
     if (reply->type == REDIS_REPLY_ERROR)
