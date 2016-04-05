@@ -47,19 +47,17 @@ int main(int argc, char *argv[]) {
 
 void retrieve_channel(redisContext *context, char id[], int channel_id) {
     char *status_key = mem_io_create_channel_status_key(id, channel_id);
-    if (mem_io_channel_status_is_set(context, status_key) &&
-            !mem_io_is_channel_open(context, status_key)) {
-        char *key = mem_io_create_key(id, channel_id);
-        long nr_bytes = mem_io_retrieve(context, key, stdout);
-        if (nr_bytes == 0)
-            warnx("no data in channel %0*d",
-                    CHANNEL_ID_WIDTH, channel_id);
-        else
-            fprintf(stdout, "\n");
-        free(key);
-    } else {
-        errx(OPEN_CHANNEL_ERROR, "retrieving from open channel %d",
-             channel_id);
+    if (!mem_io_channel_status_is_set(context, status_key) ||
+            mem_io_is_channel_open(context, status_key)) {
+        warnx("retrieving from open channel %d", channel_id);
     }
+    char *key = mem_io_create_key(id, channel_id);
+    long nr_bytes = mem_io_retrieve(context, key, stdout);
+    if (nr_bytes == 0)
+        warnx("no data in channel %0*d",
+                CHANNEL_ID_WIDTH, channel_id);
+    else
+        fprintf(stdout, "\n");
+    free(key);
     free(status_key);
 }
