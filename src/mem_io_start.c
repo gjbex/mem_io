@@ -148,6 +148,9 @@ void create_redis_conf_file(char mem_io_id[], Params *params,
     char *db_name = redis_db_name(mem_io_id);
     cmd_append_key_value_option(cmd, "--define",
                                 "REDIS_DBFILENAME", db_name);
+    char *log_name = redis_log_name(mem_io_id);
+    cmd_append_key_value_option(cmd, "--define",
+                                "REDIS_LOGFILENAME", log_name);
     char *redis_conf_m4 = get_redis_conf_m4_path(params);
     cmd_append_arg(cmd, redis_conf_m4, false);
     cmd_redirect_stdout(cmd, conf_name);
@@ -162,4 +165,5 @@ void create_redis_conf_file(char mem_io_id[], Params *params,
     cmd_free(cmd);
     free(conf_name);
     free(db_name);
+    free(log_name);
 }
