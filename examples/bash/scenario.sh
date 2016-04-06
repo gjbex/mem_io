@@ -17,8 +17,11 @@ do
     done
 done
 
-# retrieve all information and dump to file
-mem_io_retrieve -print_id -sep ': ' > data.txt
+# retrieve all information and dump to a single file
+mem_io_retrieve -print_id -sep ': ' > data_default_all.dat
+
+# retrieve information channel by channel and save to individual files
+mem_io_retrieve -split
 
 # stop mem_io
 mem_io_stop
