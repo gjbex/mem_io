@@ -83,7 +83,8 @@ char *get_hostname(Params *params) {
     if (0 == strlen(params->domain_name))
         snprintf(hostname, MAX_LENGTH, "%s", nodename);
     else
-        snprintf(hostname, MAX_LENGTH, "%s.%s", nodename, DOMAIN_NAME);
+        snprintf(hostname, MAX_LENGTH, "%s.%s", nodename,
+                 params->domain_name);
     return hostname;
 }
 
