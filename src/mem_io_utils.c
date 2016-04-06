@@ -16,6 +16,8 @@
 
 #define MAX_LENGTH 1024
 
+void mem_io_print_type(int type);
+
 /*!
   \brief Create a connection to the redis database, represented by a
          redisContext.
@@ -174,7 +176,7 @@ void mem_io_close_channel(redisContext *context, char key[]) {
 bool mem_io_channel_status_is_set(redisContext *context, char key[]) {
     redisReply *reply = redisCommand(context, "GET %b",
                                      key, strlen(key));
-    bool result = !(reply->type == REDIS_REPLY_ERROR);
+    bool result = (reply->type != REDIS_REPLY_NIL);
     freeReplyObject(reply);
     return result;
 }

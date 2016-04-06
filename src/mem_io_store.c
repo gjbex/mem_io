@@ -25,7 +25,7 @@ int main(int argc, char *argv[]) {
              params.channel_id);
     char *status_key = mem_io_create_channel_status_key(mem_io_id,
                                                         params.channel_id);
-    if (!mem_io_channel_status_is_set(context, status_key) &&
+    if (!mem_io_channel_status_is_set(context, status_key) ||
             !mem_io_is_channel_open(context, status_key)) {
         mem_io_open_channel(context, status_key);
         char buffer[BUFF_SIZE];
