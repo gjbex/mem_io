@@ -8,7 +8,8 @@
 
 #define BUFF_SIZE 1024
 
-void retrieve_channel(redisContext *context, char id[], int channel_id);
+void retrieve_channel(redisContext *context, char id[], int channel_id,
+                      Params *params);
 
 int main(int argc, char *argv[]) {
     Params params;
@@ -29,14 +30,14 @@ int main(int argc, char *argv[]) {
         if (params.channel_id >= nr_channels)
             errx(INVALID_CHANNEL_ERROR, "invalid channel ID %d",
                  params.channel_id);
-        retrieve_channel(context, mem_io_id, params.channel_id);
+        retrieve_channel(context, mem_io_id, params.channel_id, &params);
     } else {
         if (params.verbose)
             fprintf(stderr, "# retrieving data from %d channels\n",
                     nr_channels);
         for (int channel_id = 0; channel_id < nr_channels;
                 channel_id++) {
-            retrieve_channel(context, mem_io_id, channel_id);
+            retrieve_channel(context, mem_io_id, channel_id, &params);
         }
     }
     mem_io_disconnect(context);
@@ -45,11 +46,15 @@ int main(int argc, char *argv[]) {
     return EXIT_SUCCESS;
 }
 
-void retrieve_channel(redisContext *context, char id[], int channel_id) {
+void retrieve_channel(redisContext *context, char id[], int channel_id,
+                      Params *params) {
+    if (params->print_id)
+        fprintf(stdout, "%d%s", channel_id, params->sep);
     char *status_key = mem_io_create_channel_status_key(id, channel_id);
     if (!mem_io_channel_status_is_set(context, status_key) ||
             mem_io_is_channel_open(context, status_key)) {
-        warnx("retrieving from open channel %d", channel_id);
+        warnx("retrieving from open channel %d, data may be incomplete",
+              channel_id);
     }
     char *key = mem_io_create_key(id, channel_id);
     long nr_bytes = mem_io_retrieve(context, key, stdout);

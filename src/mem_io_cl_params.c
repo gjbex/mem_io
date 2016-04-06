@@ -58,6 +58,11 @@ void initCL(Params *params) {
 	params->force = false;
 	params->restart = false;
 	params->random = false;
+	params->print_id = false;
+	len = strlen(" ");
+	if (!(params->sep = (char *) calloc(len + 1, sizeof(char))))
+		errx(EXIT_CL_ALLOC_FAIL, "can not allocate sep field");
+	strncpy(params->sep, " ", len + 1);
 }
 
 void parseCL(Params *params, int *argc, char **argv[]) {
@@ -290,6 +295,27 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 		}
 		if (!strncmp((*argv)[i], "-random", 8)) {
 			params->random = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-print_id", 10)) {
+			params->print_id = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-sep", 5)) {
+			shiftCL(&i, *argc, *argv);
+			argv_str = (*argv)[i];
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-sep' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->sep);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->sep = strncpy(tmp, argv_str, len + 1);
 			i++;
 			continue;
 		}
@@ -541,6 +567,34 @@ void parseFileCL(Params *params, char *fileName) {
 			}
 			continue;
 		}
+		if (sscanf(line_str, "print_id = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-print_id' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->print_id = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->print_id = true;
+			} else {
+				params->print_id = atoi(argv_str);
+			}
+			continue;
+		}
+		if (sscanf(line_str, "sep = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-sep' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->sep);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->sep = strncpy(tmp, argv_str, len + 1);
+			stripQuotesCL(params->sep);
+			continue;
+		}
 		fprintf(stderr, "### warning, line can not be parsed: '%s'\n", line_str);
 	}
 	fclose(fp);
@@ -565,6 +619,8 @@ void dumpCL(FILE *fp, char prefix[], Params *params) {
 	fprintf(fp, "%sforce = %d\n", prefix, params->force);
 	fprintf(fp, "%srestart = %d\n", prefix, params->restart);
 	fprintf(fp, "%srandom = %d\n", prefix, params->random);
+	fprintf(fp, "%sprint_id = %d\n", prefix, params->print_id);
+	fprintf(fp, "%ssep = '%s'\n", prefix, params->sep);
 }
 
 void finalizeCL(Params *params) {
@@ -578,8 +634,9 @@ void finalizeCL(Params *params) {
 	free(params->global_conf);
 	free(params->mem_io_conf);
 	free(params->domain_name);
+	free(params->sep);
 }
 
 void printHelpCL(FILE *fp) {
-	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -global_conf <string>\n  -mem_io_conf <string>\n  -domain_name <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -restart\n  -random\n  -?: print this message");
+	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -global_conf <string>\n  -mem_io_conf <string>\n  -domain_name <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -restart\n  -random\n  -print_id\n  -sep <string>\n  -?: print this message");
 }

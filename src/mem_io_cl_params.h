@@ -23,6 +23,8 @@ typedef struct {
 	bool force;
 	bool restart;
 	bool random;
+	bool print_id;
+	char * sep;
 } Params;
 
 void initCL(Params *params);

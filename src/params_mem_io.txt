@@ -16,3 +16,5 @@ bool	verbose	false
 bool	force	false
 bool	restart	false
 bool	random	false
+bool	print_id	false
+char *	sep	' '
