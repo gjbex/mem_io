@@ -23,7 +23,7 @@ mem_io_store: $(MEM_IO_STORE_OBJS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 mem_io_retrieve: $(MEM_IO_RETRIEVE_OBJS)
-	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS) -lm
 
 mem_io_stop: $(MEM_IO_STOP_OBJS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
