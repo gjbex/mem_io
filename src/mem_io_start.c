@@ -71,7 +71,6 @@ int main(int argc, char *argv[]) {
 }
 
 #define MAX_LENGTH 1024
-#define DOMAIN_NAME "thinking.leuven.vsc"
 
 char *get_hostname(Params *params) {
     char nodename[MAX_LENGTH];
