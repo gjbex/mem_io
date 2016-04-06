@@ -35,5 +35,6 @@ char *mem_io_conf_name(char mem_io_id[]);
 void mem_io_merge_params(char mem_io_id[], Params *params);
 char *redis_conf_name(char mem_io_id[]);
 char *redis_db_name(char mem_io_id[]);
+char *redis_log_name(char mem_io_id[]);
 
 #endif

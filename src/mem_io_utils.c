@@ -405,6 +405,19 @@ char *redis_db_name(char mem_io_id[]) {
     return conf_name(REDIS_PREFIX, mem_io_id, REDIS_DB_EXT);
 }
 
+#define REDIS_LOG_EXT ".log"
+
+/*!
+  \brief Generate the name of the redis log file name based on
+         the mem_io ID.
+  \param mem_io_id mem_io ID string to use.
+  \return char* Name of the redis log file relevant for the
+                given mem_io ID.
+*/
+char *redis_log_name(char mem_io_id[]) {
+    return conf_name(REDIS_PREFIX, mem_io_id, REDIS_LOG_EXT);
+}
+
 /*!
   \brief Merge parameters specified on the command line with those in
          the session mem_io configuration file
