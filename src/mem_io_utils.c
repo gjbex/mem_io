@@ -81,6 +81,8 @@ int mem_io_get_nr_channels(redisContext *context, char mem_io_id[]) {
     redisReply *reply = redisCommand(context, "GET %b", key, strlen(key));
     if (reply->type == REDIS_REPLY_ERROR)
         errx(GET_ERROR, "GET for '%s' failed: %s", key, reply->str);
+    if (reply->type == REDIS_REPLY_NIL)
+        errx(GET_ERROR, "GET for '%s' failed, returned NIL", key);
     int value = atoi(reply->str);
     freeReplyObject(reply);
     free(key);
@@ -126,6 +128,9 @@ long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
         if (reply->type == REDIS_REPLY_ERROR)
             errx(LINDEX_ERROR, "LINDEX for '%s' at %lld failed: %s",
                  key, i, reply->str);
+        if (reply->type == REDIS_REPLY_NIL)
+            errx(LINDEX_ERROR,
+                 "LINDEX for '%s' at %lld failed, returned NIL", key, i);
         fwrite(reply->str, sizeof(char), reply->len, fp);
         nr_bytes += reply->len;
         freeReplyObject(reply);
@@ -194,6 +199,8 @@ bool mem_io_is_channel_open(redisContext *context, char key[]) {
                                      key, strlen(key));
     if (reply->type == REDIS_REPLY_ERROR)
         errx(GET_ERROR, "GET for '%s' failed: %s", key, reply->str);
+    if (reply->type == REDIS_REPLY_NIL)
+        errx(GET_ERROR, "GET for '%s' failed, returned NIL", key);
     bool result = (0 == strncmp(reply->str, "open", strlen("open") + 1));
     freeReplyObject(reply);
     return result;
