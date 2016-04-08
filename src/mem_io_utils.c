@@ -113,6 +113,7 @@ void mem_io_push(redisContext *context, char key[],
   \param key Redis database key identifying the channel to be retrieved.
   \param fp File pointer to write the data to, is supposed to be open
             for writing.
+  \return long The number of bytes retrieved from the channel..
 */
 long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
     redisReply *reply = redisCommand(context, "LLEN %b",
@@ -131,11 +132,23 @@ long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
         if (reply->type == REDIS_REPLY_NIL)
             errx(LINDEX_ERROR,
                  "LINDEX for '%s' at %lld failed, returned NIL", key, i);
-        fwrite(reply->str, sizeof(char), reply->len, fp);
+        if (fp != NULL)
+            fwrite(reply->str, sizeof(char), reply->len, fp);
         nr_bytes += reply->len;
         freeReplyObject(reply);
     }
     return nr_bytes;
+}
+
+/*!
+  \brief Compute the number of bytes stored in the given channel.
+  \param context Redis database context to work in.
+  \param key Redis database key identifying the channel to determin the size
+             of
+  \return long The number of bytes tored in the channel..
+*/
+long mem_io_channel_size(redisContext *context, char key[]) {
+    return mem_io_retrieve(context, key, NULL);
 }
 
 /*!

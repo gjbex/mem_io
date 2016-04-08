@@ -18,6 +18,7 @@ int mem_io_get_nr_channels(redisContext *context, char id[]);
 void mem_io_push(redisContext *context, char key[],
                  char *value, int length);
 long mem_io_retrieve(redisContext *context, char key[], FILE *fp);
+long mem_io_channel_size(redisContext *context, char key[]);
 void mem_io_set_channel_status(redisContext *context, char key[],
                                char status[]);
 void mem_io_open_channel(redisContext *context, char key[]);
