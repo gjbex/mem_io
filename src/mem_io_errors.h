@@ -12,6 +12,7 @@
 #define INVALID_CHANNEL_ERROR 21
 #define INVALID_NR_CHANNELS 22
 #define HOSTNAME_ERROR 23
+#define OPEN_CHANNEL_ERROR 24
 
 /* redis command errors */
 #define AUTH_ERROR 51

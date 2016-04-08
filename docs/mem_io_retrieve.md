@@ -7,3 +7,9 @@ To retrieve all results, and saving them into a text file `data.txt`, use:
 ```
 mem_io_retrieve  >  data.txt
 ```
+
+Sometimes it is useful to store the data of the individual channels in separate files, e.g., when the channels contain binary data which should not be combined into a single file.  For this purpose, `mem_io_retrieve` supports the `-split` flag.
+```
+mem_io_retrieve  -split
+```
+This will create as many files as there are channels, one for each, named `data_<mem_io_id>.dat`.  For convenience, `<mem_io_id>` is padded with zeroes, so that file names are trivally sorted lexicographically.

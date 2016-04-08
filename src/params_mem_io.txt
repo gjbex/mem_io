@@ -1,4 +1,4 @@
-char *	host	'localhost'
+char *	host	''
 int	port	6379
 int	timeout	2
 char *	password	''
@@ -7,8 +7,16 @@ char *	redis_path	'/usr/local/software/redis/3.0.7/bin/redis-server'
 char *	m4_path	'/usr/bin/m4'
 char *	redis_conf_path	'../share/mem_io'
 char *	redis_conf_m4	'redis.conf.m4'
+char *	global_conf	'mem_io_global.conf'
 char *	mem_io_conf	'.mem_io.conf'
+char *	domain_name	''
 int	channel_id	-1
 int	nr_channels	-1
 bool	verbose	false
 bool	force	false
+bool	restart	false
+bool	random	false
+bool	print_id	false
+char *	sep	' '
+bool	split	false
+bool	details	false

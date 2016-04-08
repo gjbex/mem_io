@@ -1,0 +1,4 @@
+data.txt
+redis_*.conf
+redis_*.rdb
+mem_io_*.conf

@@ -10,7 +10,9 @@ pages:
     - Starting mem_io: 'mem_io_start.md'
     - Writing data to mem_io: 'mem_io_store.md'
     - Retrieving data from mem_io: 'mem_io_retrieve.md'
+    - Checking the status of mem_io: 'mem_io_status.md'
     - Stopping mem_io: 'mem_io_stop.md'
+    - Restarting mem_io: 'restart.md'
 - mem_io database description: 'database.md'
 - Contact information: 'contact.md'
 site_dir: html_docs/mem_io

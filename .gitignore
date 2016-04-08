@@ -35,5 +35,6 @@
 *~
 *.swp
 
-# bin directory
+# project directories to ignore
 bin
+share

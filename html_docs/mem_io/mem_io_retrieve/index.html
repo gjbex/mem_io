@@ -3,10 +3,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <meta name="author" content="Geert Jan Bex (geertjan.bex@uhasselt.be)">
   
   <title>Retrieving data from mem_io - mem_io documentation</title>
   
@@ -24,8 +21,6 @@
   <script>
     // Current page data
     var mkdocs_page_name = "Retrieving data from mem_io";
-    var mkdocs_page_input_path = "mem_io_retrieve.md";
-    var mkdocs_page_url = "/mem_io_retrieve/";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -114,7 +109,21 @@
         
             
     <li class="toctree-l1 ">
+        <a class="" href="../mem_io_status/">Checking the status of mem_io</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
         <a class="" href="../mem_io_stop/">Stopping mem_io</a>
+        
+    </li>
+
+        
+            
+    <li class="toctree-l1 ">
+        <a class="" href="../restart/">Restarting mem_io</a>
         
     </li>
 
@@ -178,6 +187,12 @@ Optionally, you can specify the specific channel ID to retrieve the data from.  
 <p>To retrieve all results, and saving them into a text file <code>data.txt</code>, use:</p>
 <pre><code>mem_io_retrieve  &gt;  data.txt
 </code></pre>
+
+<p>Sometimes it is useful to store the data of the individual channels in separate files, e.g., when the channels contain binary data which should not be combined into a single file.  For this purpose, <code>mem_io_retrieve</code> supports the <code>-split</code> flag.</p>
+<pre><code>mem_io_retrieve  -split
+</code></pre>
+
+<p>This will create as many files as there are channels, one for each, named <code>data_&lt;mem_io_id&gt;.dat</code>.  For convenience, <code>&lt;mem_io_id&gt;</code> is padded with zeroes, so that file names are trivally sorted lexicographically.</p>
               
             </div>
           </div>
@@ -185,7 +200,7 @@ Optionally, you can specify the specific channel ID to retrieve the data from.  
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../mem_io_stop/" class="btn btn-neutral float-right" title="Stopping mem_io">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../mem_io_status/" class="btn btn-neutral float-right" title="Checking the status of mem_io"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
         <a href="../mem_io_store/" class="btn btn-neutral" title="Writing data to mem_io"><span class="icon icon-circle-arrow-left"></span> Previous</a>
@@ -217,7 +232,7 @@ Optionally, you can specify the specific channel ID to retrieve the data from.  
         <span><a href="../mem_io_store/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../mem_io_stop/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../mem_io_status/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

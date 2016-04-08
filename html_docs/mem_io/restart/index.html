@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>mem_io database description - mem_io documentation</title>
+  <title>Restarting mem_io - mem_io documentation</title>
   
 
   <link rel="shortcut icon" href="../img/favicon.ico">
@@ -20,7 +20,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "mem_io database description";
+    var mkdocs_page_name = "Restarting mem_io";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -118,8 +118,12 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../restart/">Restarting mem_io</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Restarting mem_io</a>
+        
+            <ul>
+            
+            </ul>
         
     </li>
 
@@ -128,12 +132,8 @@
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">mem_io database description</a>
-        
-            <ul>
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../database/">mem_io database description</a>
         
     </li>
 <li>
@@ -166,8 +166,12 @@
     <li><a href="..">Docs</a> &raquo;</li>
     
       
+        
+          <li>Commands &raquo;</li>
+        
+      
     
-    <li>mem_io database description</li>
+    <li>Restarting mem_io</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -177,9 +181,18 @@
           <div role="main">
             <div class="section">
               
-                <p>The database backend used by mem_io is <a href="http://redis.io/">redis</a>.  It is an open source in-memory data structure store.  mem_io store data, as well as metadata in the database.</p>
-<p>The metadata is currently limited to the number of channels, stored using the key <code>&lt;mem_io_id&gt;:meta:nr_channels</code> as a string.</p>
-<p>The data is stored in redis lists, one per channel ID.  To minimize the risk of data loss, <code>mem_io_store</code> typically performs multiple push operations.  The keys for the data have the following format: <code>&lt;mem_io_id&gt;:data:&lt;channel_id&gt;.  Here,</code><channel_id>` is a zero-padded string representing the number of the channel.</p>
+                <p>When a cmputation was interrupted before <code>mem_io_retrieve</code> was finished, or you prefer to retrieve information at some later point, mem_io can in fact be restarted.</p>
+<p>Suppose that the mem_io ID for the computation was <code>param_est</code>, then we can restart using</p>
+<pre><code>mem_io_start  -restart  -mem_io_id param_est
+</code></pre>
+
+<p>The database named <code>redis_param_est.rdb</code> will be used, as well as the configuration files <code>redis_param_est.conf</code> and <code>mem_io_param_est.conf</code>.</p>
+<p>Now it is possible to retrieve informaiton using</p>
+<pre><code>mem_io_retrieve  -mem_io_id param_est
+</code></pre>
+
+<p>Note that if <code>mem_io_store</code> processes were prematurely ended, for each channel that was in use at the time, a warning will be generated since information might be lost.</p>
+<p>If you restart a database for which all channels were closed properly, it is possible to insert additional data in it when it is restarted.  However, the number of channels will remain the same, so it is only possible to add information to existing channels, not create new ones upon restart.</p>
               
             </div>
           </div>
@@ -187,10 +200,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../contact/" class="btn btn-neutral float-right" title="Contact information"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../database/" class="btn btn-neutral float-right" title="mem_io database description"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../restart/" class="btn btn-neutral" title="Restarting mem_io"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../mem_io_stop/" class="btn btn-neutral" title="Stopping mem_io"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -216,10 +229,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../restart/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../mem_io_stop/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../contact/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../database/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

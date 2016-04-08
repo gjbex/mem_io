@@ -10,10 +10,10 @@
 
 void initCL(Params *params) {
 	int len;
-	len = strlen("localhost");
+	len = strlen("");
 	if (!(params->host = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate host field");
-	strncpy(params->host, "localhost", len + 1);
+	strncpy(params->host, "", len + 1);
 	params->port = 6379;
 	params->timeout = 2;
 	len = strlen("");
@@ -40,14 +40,31 @@ void initCL(Params *params) {
 	if (!(params->redis_conf_m4 = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate redis_conf_m4 field");
 	strncpy(params->redis_conf_m4, "redis.conf.m4", len + 1);
+	len = strlen("mem_io_global.conf");
+	if (!(params->global_conf = (char *) calloc(len + 1, sizeof(char))))
+		errx(EXIT_CL_ALLOC_FAIL, "can not allocate global_conf field");
+	strncpy(params->global_conf, "mem_io_global.conf", len + 1);
 	len = strlen(".mem_io.conf");
 	if (!(params->mem_io_conf = (char *) calloc(len + 1, sizeof(char))))
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate mem_io_conf field");
 	strncpy(params->mem_io_conf, ".mem_io.conf", len + 1);
+	len = strlen("");
+	if (!(params->domain_name = (char *) calloc(len + 1, sizeof(char))))
+		errx(EXIT_CL_ALLOC_FAIL, "can not allocate domain_name field");
+	strncpy(params->domain_name, "", len + 1);
 	params->channel_id = -1;
 	params->nr_channels = -1;
 	params->verbose = false;
 	params->force = false;
+	params->restart = false;
+	params->random = false;
+	params->print_id = false;
+	len = strlen(" ");
+	if (!(params->sep = (char *) calloc(len + 1, sizeof(char))))
+		errx(EXIT_CL_ALLOC_FAIL, "can not allocate sep field");
+	strncpy(params->sep, " ", len + 1);
+	params->split = false;
+	params->details = false;
 }
 
 void parseCL(Params *params, int *argc, char **argv[]) {
@@ -193,6 +210,22 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 			i++;
 			continue;
 		}
+		if (!strncmp((*argv)[i], "-global_conf", 13)) {
+			shiftCL(&i, *argc, *argv);
+			argv_str = (*argv)[i];
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-global_conf' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->global_conf);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->global_conf = strncpy(tmp, argv_str, len + 1);
+			i++;
+			continue;
+		}
 		if (!strncmp((*argv)[i], "-mem_io_conf", 13)) {
 			shiftCL(&i, *argc, *argv);
 			argv_str = (*argv)[i];
@@ -206,6 +239,22 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
 				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
 			params->mem_io_conf = strncpy(tmp, argv_str, len + 1);
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-domain_name", 13)) {
+			shiftCL(&i, *argc, *argv);
+			argv_str = (*argv)[i];
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-domain_name' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->domain_name);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->domain_name = strncpy(tmp, argv_str, len + 1);
 			i++;
 			continue;
 		}
@@ -238,6 +287,47 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 		}
 		if (!strncmp((*argv)[i], "-force", 7)) {
 			params->force = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-restart", 9)) {
+			params->restart = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-random", 8)) {
+			params->random = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-print_id", 10)) {
+			params->print_id = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-sep", 5)) {
+			shiftCL(&i, *argc, *argv);
+			argv_str = (*argv)[i];
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-sep' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->sep);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->sep = strncpy(tmp, argv_str, len + 1);
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-split", 7)) {
+			params->split = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-details", 9)) {
+			params->details = true;
 			i++;
 			continue;
 		}
@@ -375,6 +465,20 @@ void parseFileCL(Params *params, char *fileName) {
 			stripQuotesCL(params->redis_conf_m4);
 			continue;
 		}
+		if (sscanf(line_str, "global_conf = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-global_conf' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->global_conf);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->global_conf = strncpy(tmp, argv_str, len + 1);
+			stripQuotesCL(params->global_conf);
+			continue;
+		}
 		if (sscanf(line_str, "mem_io_conf = %[^\n]", argv_str) == 1) {
 			if (!1) {
 				fprintf(stderr, "### error: invalid value for option '-mem_io_conf' of type char *\n");
@@ -387,6 +491,20 @@ void parseFileCL(Params *params, char *fileName) {
 				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
 			params->mem_io_conf = strncpy(tmp, argv_str, len + 1);
 			stripQuotesCL(params->mem_io_conf);
+			continue;
+		}
+		if (sscanf(line_str, "domain_name = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-domain_name' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->domain_name);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->domain_name = strncpy(tmp, argv_str, len + 1);
+			stripQuotesCL(params->domain_name);
 			continue;
 		}
 		if (sscanf(line_str, "channel_id = %[^\n]", argv_str) == 1) {
@@ -433,6 +551,90 @@ void parseFileCL(Params *params, char *fileName) {
 			}
 			continue;
 		}
+		if (sscanf(line_str, "restart = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-restart' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->restart = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->restart = true;
+			} else {
+				params->restart = atoi(argv_str);
+			}
+			continue;
+		}
+		if (sscanf(line_str, "random = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-random' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->random = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->random = true;
+			} else {
+				params->random = atoi(argv_str);
+			}
+			continue;
+		}
+		if (sscanf(line_str, "print_id = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-print_id' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->print_id = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->print_id = true;
+			} else {
+				params->print_id = atoi(argv_str);
+			}
+			continue;
+		}
+		if (sscanf(line_str, "sep = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-sep' of type char *\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			char *tmp;
+			int len = strlen(argv_str);
+			free(params->sep);
+			if (!(tmp = (char *) calloc(len + 1, sizeof(char))))
+				errx(EXIT_CL_ALLOC_FAIL, "can not allocate char* field");
+			params->sep = strncpy(tmp, argv_str, len + 1);
+			stripQuotesCL(params->sep);
+			continue;
+		}
+		if (sscanf(line_str, "split = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-split' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->split = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->split = true;
+			} else {
+				params->split = atoi(argv_str);
+			}
+			continue;
+		}
+		if (sscanf(line_str, "details = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-details' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->details = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->details = true;
+			} else {
+				params->details = atoi(argv_str);
+			}
+			continue;
+		}
 		fprintf(stderr, "### warning, line can not be parsed: '%s'\n", line_str);
 	}
 	fclose(fp);
@@ -448,11 +650,19 @@ void dumpCL(FILE *fp, char prefix[], Params *params) {
 	fprintf(fp, "%sm4_path = '%s'\n", prefix, params->m4_path);
 	fprintf(fp, "%sredis_conf_path = '%s'\n", prefix, params->redis_conf_path);
 	fprintf(fp, "%sredis_conf_m4 = '%s'\n", prefix, params->redis_conf_m4);
+	fprintf(fp, "%sglobal_conf = '%s'\n", prefix, params->global_conf);
 	fprintf(fp, "%smem_io_conf = '%s'\n", prefix, params->mem_io_conf);
+	fprintf(fp, "%sdomain_name = '%s'\n", prefix, params->domain_name);
 	fprintf(fp, "%schannel_id = %d\n", prefix, params->channel_id);
 	fprintf(fp, "%snr_channels = %d\n", prefix, params->nr_channels);
 	fprintf(fp, "%sverbose = %d\n", prefix, params->verbose);
 	fprintf(fp, "%sforce = %d\n", prefix, params->force);
+	fprintf(fp, "%srestart = %d\n", prefix, params->restart);
+	fprintf(fp, "%srandom = %d\n", prefix, params->random);
+	fprintf(fp, "%sprint_id = %d\n", prefix, params->print_id);
+	fprintf(fp, "%ssep = '%s'\n", prefix, params->sep);
+	fprintf(fp, "%ssplit = %d\n", prefix, params->split);
+	fprintf(fp, "%sdetails = %d\n", prefix, params->details);
 }
 
 void finalizeCL(Params *params) {
@@ -463,9 +673,12 @@ void finalizeCL(Params *params) {
 	free(params->m4_path);
 	free(params->redis_conf_path);
 	free(params->redis_conf_m4);
+	free(params->global_conf);
 	free(params->mem_io_conf);
+	free(params->domain_name);
+	free(params->sep);
 }
 
 void printHelpCL(FILE *fp) {
-	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -mem_io_conf <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -?: print this message");
+	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -global_conf <string>\n  -mem_io_conf <string>\n  -domain_name <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -restart\n  -random\n  -print_id\n  -sep <string>\n  -split\n  -details\n  -?: print this message");
 }

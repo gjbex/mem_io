@@ -16,6 +16,8 @@
 
 #define MAX_LENGTH 1024
 
+void mem_io_print_type(int type);
+
 /*!
   \brief Create a connection to the redis database, represented by a
          redisContext.
@@ -79,6 +81,8 @@ int mem_io_get_nr_channels(redisContext *context, char mem_io_id[]) {
     redisReply *reply = redisCommand(context, "GET %b", key, strlen(key));
     if (reply->type == REDIS_REPLY_ERROR)
         errx(GET_ERROR, "GET for '%s' failed: %s", key, reply->str);
+    if (reply->type == REDIS_REPLY_NIL)
+        errx(GET_ERROR, "GET for '%s' failed, returned NIL", key);
     int value = atoi(reply->str);
     freeReplyObject(reply);
     free(key);
@@ -109,6 +113,7 @@ void mem_io_push(redisContext *context, char key[],
   \param key Redis database key identifying the channel to be retrieved.
   \param fp File pointer to write the data to, is supposed to be open
             for writing.
+  \return long The number of bytes retrieved from the channel..
 */
 long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
     redisReply *reply = redisCommand(context, "LLEN %b",
@@ -124,11 +129,94 @@ long mem_io_retrieve(redisContext *context, char key[], FILE *fp) {
         if (reply->type == REDIS_REPLY_ERROR)
             errx(LINDEX_ERROR, "LINDEX for '%s' at %lld failed: %s",
                  key, i, reply->str);
-        fwrite(reply->str, sizeof(char), reply->len, fp);
+        if (reply->type == REDIS_REPLY_NIL)
+            errx(LINDEX_ERROR,
+                 "LINDEX for '%s' at %lld failed, returned NIL", key, i);
+        if (fp != NULL)
+            fwrite(reply->str, sizeof(char), reply->len, fp);
         nr_bytes += reply->len;
         freeReplyObject(reply);
     }
     return nr_bytes;
+}
+
+/*!
+  \brief Compute the number of bytes stored in the given channel.
+  \param context Redis database context to work in.
+  \param key Redis database key identifying the channel to determin the size
+             of
+  \return long The number of bytes tored in the channel..
+*/
+long mem_io_channel_size(redisContext *context, char key[]) {
+    return mem_io_retrieve(context, key, NULL);
+}
+
+/*!
+  \brief Modify the specified channel's status.
+  \param context Redis database context to work in.
+  \param key Redis key to store status information in.
+  \param status Status string to set, either 'open' or 'closed'
+*/
+void mem_io_set_channel_status(redisContext *context, char key[],
+                               char status[]) {
+    redisReply *reply = redisCommand(context, "SET %b %b",
+                                     key, strlen(key),
+                                     status, strlen(status) + 1);
+    if (reply->type == REDIS_REPLY_ERROR)
+        errx(SET_ERROR, "SET for '%s' failed: %s", key, reply->str);
+    freeReplyObject(reply);
+}
+
+/*!
+  \brief Open the specified channel.
+  \param context Redis database context to work in.
+  \param key Redis key to set 'open' value in.
+*/
+void mem_io_open_channel(redisContext *context, char key[]) {
+    mem_io_set_channel_status(context, key, "open");
+}
+
+/*!
+  \brief Close the specified channel.
+  \param context Redis database context to work in.
+  \param key Redis key to set 'close' value in.
+*/
+void mem_io_close_channel(redisContext *context, char key[]) {
+    mem_io_set_channel_status(context, key, "closed");
+}
+
+/*!
+  \brief Check whether channel status information has been set for the
+         given key
+  \param context Redis database context to work in.
+  \param key Redis key to check for.
+ */
+bool mem_io_channel_status_is_set(redisContext *context, char key[]) {
+    redisReply *reply = redisCommand(context, "GET %b",
+                                     key, strlen(key));
+    bool result = (reply->type != REDIS_REPLY_NIL);
+    freeReplyObject(reply);
+    return result;
+}
+
+/*!
+  \brief Check whether channel status information has been set for the
+         given key
+  \param context Redis database context to work in.
+  \param key Redis key to check for.
+ */
+bool mem_io_is_channel_open(redisContext *context, char key[]) {
+    if (!mem_io_channel_status_is_set(context, key))
+        return false;
+    redisReply *reply = redisCommand(context, "GET %b",
+                                     key, strlen(key));
+    if (reply->type == REDIS_REPLY_ERROR)
+        errx(GET_ERROR, "GET for '%s' failed: %s", key, reply->str);
+    if (reply->type == REDIS_REPLY_NIL)
+        errx(GET_ERROR, "GET for '%s' failed, returned NIL", key);
+    bool result = (0 == strncmp(reply->str, "open", strlen("open") + 1));
+    freeReplyObject(reply);
+    return result;
 }
 
 /*!
@@ -182,6 +270,26 @@ char *mem_io_create_meta_key(char mem_io_id[], char spec[]) {
     if (key == NULL)
         errx(ALLOC_ERROR, "can not allocate key of length %d", key_length);
     snprintf(key,  key_length, "%s%s%s", mem_io_id, qualifier, spec);
+    return key;
+}
+
+/*!
+  \brief Create a redis database key for storing status information about
+         the given channel.
+  \param mem_io_id mem_io identifier string to use.
+  \param channel_id Channel ID to store the status of.
+              for.
+  \return char* The key to access the given channel's status information.
+*/
+char *mem_io_create_channel_status_key(char mem_io_id[], int channel_id) {
+    char qualifier[80] = ":meta:status:";
+    int key_length = strlen(mem_io_id) + strlen(qualifier) +
+        CHANNEL_ID_WIDTH + 1;
+    char *key = (char *) malloc(key_length*sizeof(char));
+    if (key == NULL)
+        errx(ALLOC_ERROR, "can not allocate key of length %d", key_length);
+    snprintf(key,  key_length, "%s%s%0*d", mem_io_id, qualifier,
+             CHANNEL_ID_WIDTH, channel_id);
     return key;
 }
 
@@ -285,7 +393,12 @@ char *mem_io_conf_name(char mem_io_id[]) {
     return conf_name(MEM_IO_CONF_PREFIX, mem_io_id, MEM_IO_CONF_EXT);
 }
 
-#define REDIS_PREFIX "mem_io_"
+/*!
+  \brief Generate the name of the global mem_io configuration file
+  \return char* Name of the global mem_io configuration file
+*/
+
+#define REDIS_PREFIX "redis_"
 #define REDIS_CONF_EXT ".conf"
 
 /*!
@@ -310,6 +423,19 @@ char *redis_conf_name(char mem_io_id[]) {
 */
 char *redis_db_name(char mem_io_id[]) {
     return conf_name(REDIS_PREFIX, mem_io_id, REDIS_DB_EXT);
+}
+
+#define REDIS_LOG_EXT ".log"
+
+/*!
+  \brief Generate the name of the redis log file name based on
+         the mem_io ID.
+  \param mem_io_id mem_io ID string to use.
+  \return char* Name of the redis log file relevant for the
+                given mem_io ID.
+*/
+char *redis_log_name(char mem_io_id[]) {
+    return conf_name(REDIS_PREFIX, mem_io_id, REDIS_LOG_EXT);
 }
 
 /*!
