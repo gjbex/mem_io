@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>mem_io database description - mem_io documentation</title>
+  <title>Checking the status of mem_io - mem_io documentation</title>
   
 
   <link rel="shortcut icon" href="../img/favicon.ico">
@@ -20,7 +20,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "mem_io database description";
+    var mkdocs_page_name = "Checking the status of mem_io";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -104,8 +104,12 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../mem_io_status/">Checking the status of mem_io</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Checking the status of mem_io</a>
+        
+            <ul>
+            
+            </ul>
         
     </li>
 
@@ -128,12 +132,8 @@
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">mem_io database description</a>
-        
-            <ul>
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../database/">mem_io database description</a>
         
     </li>
 <li>
@@ -166,8 +166,12 @@
     <li><a href="..">Docs</a> &raquo;</li>
     
       
+        
+          <li>Commands &raquo;</li>
+        
+      
     
-    <li>mem_io database description</li>
+    <li>Checking the status of mem_io</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -177,9 +181,24 @@
           <div role="main">
             <div class="section">
               
-                <p>The database backend used by mem_io is <a href="http://redis.io/">redis</a>.  It is an open source in-memory data structure store.  mem_io store data, as well as metadata in the database.</p>
-<p>The metadata is currently limited to the number of channels, stored using the key <code>&lt;mem_io_id&gt;:meta:nr_channels</code> as a string.</p>
-<p>The data is stored in redis lists, one per channel ID.  To minimize the risk of data loss, <code>mem_io_store</code> typically performs multiple push operations.  The keys for the data have the following format: <code>&lt;mem_io_id&gt;:data:&lt;channel_id&gt;.  Here,</code><channel_id>` is a zero-padded string representing the number of the channel.</p>
+                <p>In order to check the status of mem_io, you can use <code>mem_io_status</code>.  By default, it will provide a summary listing the number of channels, the number of channels that have not been used yet, the number of open, and closed channels.</p>
+<p>This utitlity can be used to check on the progress of a running computation, for diagnostic purposes during a run, or the verify the status once the computation has finished.</p>
+<p>Note that <code>mem_io_status</code> expects mem_io to be started, so if it is not, first used <code>mem_io_start  -restart  -mem_io_id &lt;mem_io_id&gt;</code> to start it.</p>
+<p>If mem_io is running, simply check the  status using:</p>
+<pre><code>mem_io_status
+</code></pre>
+
+<p>To check the status of a running mem_io session on computes from a login node, simply use</p>
+<pre><code>mem_io_start  -mem_io_id &lt;mem_io_id&gt;
+</code></pre>
+
+<p>where <code>&lt;mem_io_id&gt;</code> denotes the mem_io ID of the running computation.</p>
+<p>To check the status of a finished computation, use:
+<code>``
+mem_io_start  -restart  -mem_io_id &lt;mem_io_id&gt;
+mem_io_status  -mem_io_id &lt;mem_io_id&gt;
+mem_io_stop  -Mem_io_id&gt;
+where</code><mem_io_id>` denotes the mem_io ID of the running computation.</p>
               
             </div>
           </div>
@@ -187,10 +206,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../contact/" class="btn btn-neutral float-right" title="Contact information"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../mem_io_stop/" class="btn btn-neutral float-right" title="Stopping mem_io"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../restart/" class="btn btn-neutral" title="Restarting mem_io"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../mem_io_retrieve/" class="btn btn-neutral" title="Retrieving data from mem_io"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -216,10 +235,10 @@
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../restart/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../mem_io_retrieve/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../contact/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../mem_io_stop/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>

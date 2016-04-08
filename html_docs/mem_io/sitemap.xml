@@ -4,7 +4,7 @@
     
     <url>
      <loc>None/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -12,7 +12,7 @@
     
     <url>
      <loc>None/usage/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -20,7 +20,7 @@
     
     <url>
      <loc>None/worker/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -29,37 +29,43 @@
         
     <url>
      <loc>None/mem_io_set_password/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/mem_io_start/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/mem_io_store/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/mem_io_retrieve/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
+     <changefreq>daily</changefreq>
+    </url>
+        
+    <url>
+     <loc>None/mem_io_status/</loc>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/mem_io_stop/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
     <url>
      <loc>None/restart/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
         
@@ -68,7 +74,7 @@
     
     <url>
      <loc>None/database/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
     
@@ -76,7 +82,7 @@
     
     <url>
      <loc>None/contact/</loc>
-     <lastmod>2016-04-07</lastmod>
+     <lastmod>2016-04-08</lastmod>
      <changefreq>daily</changefreq>
     </url>
     

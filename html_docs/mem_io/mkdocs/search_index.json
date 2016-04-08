@@ -46,6 +46,11 @@
             "title": "Retrieving data from mem_io"
         },
         {
+            "location": "/mem_io_status/",
+            "text": "In order to check the status of mem_io, you can use \nmem_io_status\n.  By default, it will provide a summary listing the number of channels, the number of channels that have not been used yet, the number of open, and closed channels.\n\n\nThis utitlity can be used to check on the progress of a running computation, for diagnostic purposes during a run, or the verify the status once the computation has finished.\n\n\nNote that \nmem_io_status\n expects mem_io to be started, so if it is not, first used \nmem_io_start  -restart  -mem_io_id <mem_io_id>\n to start it.\n\n\nIf mem_io is running, simply check the  status using:\n\n\nmem_io_status\n\n\n\n\nTo check the status of a running mem_io session on computes from a login node, simply use\n\n\nmem_io_start  -mem_io_id <mem_io_id>\n\n\n\n\nwhere \n<mem_io_id>\n denotes the mem_io ID of the running computation.\n\n\nTo check the status of a finished computation, use:\n\n``\nmem_io_start  -restart  -mem_io_id <mem_io_id>\nmem_io_status  -mem_io_id <mem_io_id>\nmem_io_stop  -Mem_io_id>\nwhere\n` denotes the mem_io ID of the running computation.",
+            "title": "Checking the status of mem_io"
+        },
+        {
             "location": "/mem_io_stop/",
             "text": "To stop mem_io, and properly shutting down the database, you simply run the \nmem_io_stop\n command.  This should of course only be run once when the job is completely finished.  Hence it is either in te job user epilogue, the worker epilog script, or at the very end of you PBS script.  It \nnever\n occurs in a worker batch script.\n\n\nmem_io_shutdown",
             "title": "Stopping mem_io"
