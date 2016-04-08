@@ -1,6 +1,7 @@
 mem_io_start
 mem_io_store
 mem_io_retrieve
+mem_io_status
 mem_io_stop
 mem_io_set_password
 *.rdb

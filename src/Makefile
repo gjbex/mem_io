@@ -4,13 +4,14 @@ CPPFLAGS = `pkg-config --cflags hiredis`
 LDFLAGS = -static `pkg-config --libs hiredis`
 INSTALL_DIR = ../
 
-APPL = mem_io_start mem_io_store mem_io_retrieve mem_io_stop \
+APPL = mem_io_start mem_io_store mem_io_retrieve mem_io_stop mem_io_status \
        mem_io_set_password
 COMMON_OBJS = mem_io_utils.o mem_io_cl_params.o mem_io_cl_params_aux.o \
               cmd_utils.o
 MEM_IO_START_OBJS = $(COMMON_OBJS) mem_io_start.o
 MEM_IO_STORE_OBJS = $(COMMON_OBJS) mem_io_store.o
 MEM_IO_RETRIEVE_OBJS = $(COMMON_OBJS) mem_io_retrieve.o
+MEM_IO_STATUS_OBJS = $(COMMON_OBJS) mem_io_status.o
 MEM_IO_STOP_OBJS = $(COMMON_OBJS) mem_io_stop.o
 MEM_IO_SET_PASSWORD_OBJS = $(COMMON_OBJS) mem_io_set_password.o
 
@@ -26,6 +27,9 @@ mem_io_retrieve: $(MEM_IO_RETRIEVE_OBJS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS) -lm
 
 mem_io_stop: $(MEM_IO_STOP_OBJS)
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
+
+mem_io_status: $(MEM_IO_STATUS_OBJS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ $^ $(LDFLAGS)
 
 mem_io_set_password: $(MEM_IO_SET_PASSWORD_OBJS)

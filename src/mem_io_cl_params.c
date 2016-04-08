@@ -64,6 +64,7 @@ void initCL(Params *params) {
 		errx(EXIT_CL_ALLOC_FAIL, "can not allocate sep field");
 	strncpy(params->sep, " ", len + 1);
 	params->split = false;
+	params->details = false;
 }
 
 void parseCL(Params *params, int *argc, char **argv[]) {
@@ -322,6 +323,11 @@ void parseCL(Params *params, int *argc, char **argv[]) {
 		}
 		if (!strncmp((*argv)[i], "-split", 7)) {
 			params->split = true;
+			i++;
+			continue;
+		}
+		if (!strncmp((*argv)[i], "-details", 9)) {
+			params->details = true;
 			i++;
 			continue;
 		}
@@ -615,6 +621,20 @@ void parseFileCL(Params *params, char *fileName) {
 			}
 			continue;
 		}
+		if (sscanf(line_str, "details = %[^\n]", argv_str) == 1) {
+			if (!1) {
+				fprintf(stderr, "### error: invalid value for option '-details' of type bool\n");
+				exit(EXIT_CL_INVALID_VALUE);
+			}
+			if (!strncmp("false", argv_str, 6)) {
+				params->details = false;
+			} else if (!strncmp("true", argv_str, 5)) {
+				params->details = true;
+			} else {
+				params->details = atoi(argv_str);
+			}
+			continue;
+		}
 		fprintf(stderr, "### warning, line can not be parsed: '%s'\n", line_str);
 	}
 	fclose(fp);
@@ -642,6 +662,7 @@ void dumpCL(FILE *fp, char prefix[], Params *params) {
 	fprintf(fp, "%sprint_id = %d\n", prefix, params->print_id);
 	fprintf(fp, "%ssep = '%s'\n", prefix, params->sep);
 	fprintf(fp, "%ssplit = %d\n", prefix, params->split);
+	fprintf(fp, "%sdetails = %d\n", prefix, params->details);
 }
 
 void finalizeCL(Params *params) {
@@ -659,5 +680,5 @@ void finalizeCL(Params *params) {
 }
 
 void printHelpCL(FILE *fp) {
-	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -global_conf <string>\n  -mem_io_conf <string>\n  -domain_name <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -restart\n  -random\n  -print_id\n  -sep <string>\n  -split\n  -?: print this message");
+	fprintf(fp, "  -host <string>\n  -port <integer>\n  -timeout <integer>\n  -password <string>\n  -mem_io_id <string>\n  -redis_path <string>\n  -m4_path <string>\n  -redis_conf_path <string>\n  -redis_conf_m4 <string>\n  -global_conf <string>\n  -mem_io_conf <string>\n  -domain_name <string>\n  -channel_id <integer>\n  -nr_channels <integer>\n  -verbose\n  -force\n  -restart\n  -random\n  -print_id\n  -sep <string>\n  -split\n  -details\n  -?: print this message");
 }

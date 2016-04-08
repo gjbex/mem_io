@@ -26,6 +26,7 @@ typedef struct {
 	bool print_id;
 	char * sep;
 	bool split;
+	bool details;
 } Params;
 
 void initCL(Params *params);

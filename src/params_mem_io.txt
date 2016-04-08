@@ -19,3 +19,4 @@ bool	random	false
 bool	print_id	false
 char *	sep	' '
 bool	split	false
+bool	details	false
