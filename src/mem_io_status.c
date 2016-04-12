@@ -7,9 +7,6 @@
 #include "mem_io_utils.h"
 #include "mem_io_cl_params.h"
 
-#define BUFF_SIZE 1024
-#define MAX_LENGTH 1024
-
 #define CHANNEL_UNUSED 0
 #define CHANNEL_OPEN 1
 #define CHANNEL_CLOSED 2
@@ -32,8 +29,7 @@ int main(int argc, char *argv[]) {
     if (params.verbose)
         fprintf(stderr, "# checking status for %d channels\n", nr_channels);
     int nr_unused = 0, nr_open = 0, nr_closed = 0;
-    for (int channel_id = 0; channel_id < nr_channels;
-            channel_id++) {
+    for (int channel_id = 0; channel_id < nr_channels; channel_id++) {
         int status = get_channel_status(context, mem_io_id, channel_id,
                                         &params);
         switch (status) {
