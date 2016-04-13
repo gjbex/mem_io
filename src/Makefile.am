@@ -65,4 +65,4 @@ mem_io_set_password_LDFLAGS = -static
 mem_io_set_password_LDADD = ${hiredis_LIBS}
 
 sharedir = $(prefix)/share/memio
-dist_share_DATA = mem_io_global.conf redis.conf.me
+dist_share_DATA = mem_io_global.conf redis.conf.m4
