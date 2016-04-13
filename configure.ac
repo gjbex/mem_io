@@ -1,6 +1,6 @@
 AC_INIT([mem_io], [1.4], [geertjan.bex@uhasselt.be])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign tar-pax])
-AC_PROG_CC([gcc])
+AC_PROG_CC
 AC_CHECK_HEADERS([err.h errno.h float.h libgen.h limits.h math.h \
                   stdbool.h stdio.h stdlib.h string.h sys/stat.h \
                   sys/types.h unistd.h])
