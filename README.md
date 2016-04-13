@@ -18,7 +18,7 @@ Although it is possible to tune parallel file systems for such workloads, this i
 1. The `hiredis` C library that implements an API to commnicate with a redis database (https://github.com/redis/hiredis).
 1. redis (http://redis.io/), an open source data structure server.
 
-For installation instructions, see [INSTALL.md](README.md).
+For installation instructions, see [INSTALL.md](INSTALL.md).
 
 
 ## Documentation
