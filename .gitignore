@@ -38,3 +38,7 @@
 # project directories to ignore
 bin
 share
+config.log
+config.status
+Makefile
+src/.deps
