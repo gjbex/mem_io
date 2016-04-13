@@ -20,4 +20,5 @@ To check the status of a finished computation, use:
 mem_io_start  -restart  -mem_io_id <mem_io_id>
 mem_io_status  -mem_io_id <mem_io_id>
 mem_io_stop  -Mem_io_id>
-where `<mem_io_id>` denotes the mem_io ID of the running computation.
+```
+where `<mem_io_id>` denotes the mem_io ID of thecomputation to check on.

@@ -220,6 +220,19 @@ bool mem_io_is_channel_open(redisContext *context, char key[]) {
 }
 
 /*!
+  \brief Delete the given key frmo the database
+  \param context Redis database context to work in.
+  \param key Redis key to delete
+ */
+void mem_io_delete(redisContext *context, char key[]) {
+    redisReply *reply = redisCommand(context, "DEL %b",
+                                     key, strlen(key));
+    if (reply->type == REDIS_REPLY_ERROR)
+        errx(RPUSH_ERROR, "DEL of '%s' failed: %s", key, reply->str);
+    freeReplyObject(reply);
+}
+
+/*!
   \brief Stop the redis database by performing a shutdown.
   \param context Redis database context to work in.
 */

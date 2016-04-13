@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Using mem_io with worker - mem_io documentation</title>
+  <title>Resetting incomplete channels - mem_io documentation</title>
   
 
   <link rel="shortcut icon" href="../img/favicon.ico">
@@ -20,7 +20,7 @@
   
   <script>
     // Current page data
-    var mkdocs_page_name = "Using mem_io with worker";
+    var mkdocs_page_name = "Resetting incomplete channels";
   </script>
   
   <script src="../js/jquery-2.1.1.min.js"></script>
@@ -64,12 +64,8 @@
 <li>
           
             <li>
-    <li class="toctree-l1 current">
-        <a class="current" href="./">Using mem_io with worker</a>
-        
-            <ul>
-            
-            </ul>
+    <li class="toctree-l1 ">
+        <a class="" href="../worker/">Using mem_io with worker</a>
         
     </li>
 <li>
@@ -115,8 +111,12 @@
 
         
             
-    <li class="toctree-l1 ">
-        <a class="" href="../mem_io_reset/">Resetting incomplete channels</a>
+    <li class="toctree-l1 current">
+        <a class="current" href="./">Resetting incomplete channels</a>
+        
+            <ul>
+            
+            </ul>
         
     </li>
 
@@ -173,8 +173,12 @@
     <li><a href="..">Docs</a> &raquo;</li>
     
       
+        
+          <li>Commands &raquo;</li>
+        
+      
     
-    <li>Using mem_io with worker</li>
+    <li>Resetting incomplete channels</li>
     <li class="wy-breadcrumbs-aside">
       
     </li>
@@ -184,26 +188,17 @@
           <div role="main">
             <div class="section">
               
-                <p>When using mem_io together with <a href="http://worker.readtheocs.org/">worker</a>, one of course has to set the mem_io password once using <code>mem_io_set_password</code>.  Again, this has to be done only once, see <a href="../mem_io_set_password/">Setting your mem_io password</a>.</p>
-<p>mem_io will be started from a worker prolog script, i.e.,</p>
-<pre><code>module load mem_io
-
-mem_io_start  -nr_channels 300
+                <p>If a computation was aborted while it was still in progress, a number of channels will still be open, as reported by <code>mem_io_status</code>.  This probably means that the data in thoese channels is incomplete, and that the computations that were supposed to produce it will have to be redone.</p>
+<p>Since it is mostly impossible to resume an aborted computation at exactly the point were it was aborted, it is probably redone completely.  Hence the data in the open channels should be removed, and the channels restored to their original status (unused).</p>
+<p><code>mem_io_reset</code> will do this.</p>
+<pre><code>mem_io_start  -restart  -mem_io_id &lt;mem_io_id&gt;
+mem_io_reset
+mem_io_stop  -Mem_io_id&gt;
 </code></pre>
 
-<p>Here, the number of mem_io channels should be adapted to fit your computations.</p>
-<p>The actual work is specified in the worker batch file, and the standard output is redirected to the appropriate mem_io channel.</p>
-<pre><code>module load mem_io
-
-some_program  &quot;some_input_${id}&quot;  |  mem_io_store  -channel_id ${id}
-</code></pre>
-
-<p>Note that the channel ID (i.e., the <code>$id</code> variable in this example) should be in the range 0 to number of channels - 1, inclusive.</p>
-<p>The worker epilog file will retrieve the data, save it to a file <code>all_output</code>, and stop mem_io:</p>
-<pre><code>module load mem_io
-mem_io_retrieve  &gt;  all_ouput
-mem_io_stop
-</code></pre>
+<p>where <code>&lt;mem_io_id&gt;</code> denotes the mem_io ID of the computation to be reset.</p>
+<p>Note that to use <code>mem_io_reset</code>, mem_io must be running, so typically you will have to restart  it, as in the example above.</p>
+<p>Also note that <code>mem_io_reset</code> will only remove information frmo the database that is most likely corrupt or incomplete, you may want to savve that nevertheless by using <code>mem_io_retrieve</code> first.</p>
               
             </div>
           </div>
@@ -211,10 +206,10 @@ mem_io_stop
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../mem_io_set_password/" class="btn btn-neutral float-right" title="Setting your mem_io password"/>Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../mem_io_stop/" class="btn btn-neutral float-right" title="Stopping mem_io"/>Next <span class="icon icon-circle-arrow-right"></span></a>
       
       
-        <a href="../usage/" class="btn btn-neutral" title="Use case"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../mem_io_status/" class="btn btn-neutral" title="Checking the status of mem_io"><span class="icon icon-circle-arrow-left"></span> Previous</a>
       
     </div>
   
@@ -240,10 +235,10 @@ mem_io_stop
     <span class="rst-current-version" data-toggle="rst-current-version">
       
       
-        <span><a href="../usage/" style="color: #fcfcfc;">&laquo; Previous</a></span>
+        <span><a href="../mem_io_status/" style="color: #fcfcfc;">&laquo; Previous</a></span>
       
       
-        <span style="margin-left: 15px"><a href="../mem_io_set_password/" style="color: #fcfcfc">Next &raquo;</a></span>
+        <span style="margin-left: 15px"><a href="../mem_io_stop/" style="color: #fcfcfc">Next &raquo;</a></span>
       
     </span>
 </div>
